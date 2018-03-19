@@ -4,12 +4,17 @@ class MainMenu extends Phaser.Scene{
 	}
 
 	preload(){
-		this.load.image('menuButtons', 'assets/menuButtons.png');
-		 this.load.tilemapTiledJSON('map', 'assets/menuButtons.json');
+		
+    this.load.atlas('menuButtons', 'assets/menuButtons.png', 'assets/menuButtons.json');
 	}
+
 	create(){
 		//Create Editor Button by grabbing image from set
-		var menuButton = this.add.image(width/2,height/2,'menuButtons')
+		var menuButton = this.add.sprite(width/2,height/2,'menuButtons','editorb2.png')
+		menuButton.setInteractive();
+		menuButton.on('pointerdown', function(pointer){
+			this.scene.start('Editor')
+		},this)
 
 	}
 }
