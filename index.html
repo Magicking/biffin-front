@@ -6,10 +6,11 @@
 	<script src="js/phaser.js"></script>
 	<script src="js/jquery-3.2.0.min.js"></script>
 	
-	<script src="Boot.js"></script>
-	<script src="Preloader.js"></script>
+	
+	
 	<script src="MainMenu.js"></script>
 	<script src="Editor.js"></script>
+	<script src="js/createButtons.js"></script>
 	<!--<script src="js/createArmy.js"></script>
 	<script src="js/createButtons.js"></script>
 	<script src="js/dynamicEditing.js"></script>
@@ -29,10 +30,11 @@
 		var width = window.innerWidth
 		var height = window.innerHeight
 		var config = {
-        type: Phaser.AUTO,
+        type: Phaser.CANVAS,
         width: width,
         height: height,
-    	scene:[MainMenu,Editor],
+    	scene:[MainMenu,Editor]
+
     	};
 
 
