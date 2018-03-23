@@ -7,6 +7,9 @@ var cameras;
 var BKey;
 var width
 var height
+var terrainLayer
+var objectLayer
+var buildingLayer
 var selectedTile = 1
 class Editor extends Phaser.Scene{
   constructor() {
@@ -44,10 +47,17 @@ create(){
  
     //Adding Tileset
     var tiles = map.addTilesetImage('terrain2', null, 32, 64);
-    //Creating blank tilemap layer
-    var layer = map.createBlankDynamicLayer('layer1', tiles);
-    //Randomly creates Water
-    layer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
+    //Create blank tilemap layers and give them render orders.
+    terrainLayer = map.createBlankDynamicLayer('terrains', tiles);
+    terrainLayer.depth = 0
+    objectLayer = map.createBlankDynamicLayer('objects', tiles);
+    objectLayer.depth = 1
+    buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
+    buildingLayer.depth = 2
+    //Randomly creates Water on terrainLayer
+    terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
+    terrainLayer.fill (1, 9,9,12,12)
+    objectLayer.fill(5, 10, 10, 10,10)
  
     // Create Paintbrush marker
     marker = this.add.graphics();
@@ -90,9 +100,8 @@ create(){
 
            
     //Create Back to menu Button
-   
- 
-   // createButtons();
+     //   createButtons();
+
     //Create Key for testing
         BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 }//End of Create
@@ -102,7 +111,7 @@ update (time, delta){
       width = window.innerWidth;
       height = window.innerHeigth;
       controls.update(delta);
-    var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
+      var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
  
       // Rounds down to nearest tile
       var pointerTileX = map.worldToTileX(worldPoint.x);
@@ -115,7 +124,7 @@ update (time, delta){
       if (this.input.manager.activePointer.isDown)
       {
           // Fill the tiles within an area with grass (tile id = 1)
-          map.fill(selectedTile, marker.x/32, marker.y/32, 6, 6);
+      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, 6, 6);
       }
       if (this.input.manager.KeyCodes)
       if (BKey.isDown){

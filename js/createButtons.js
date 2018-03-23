@@ -2,13 +2,13 @@ function createButtons (){
  
 
 //Create Back to menu Button
-    var menuButton = this.add.sprite{(width-width+120,height-height+60,'menuButtons','editorb0.png'),this }
+    var menuButton = this.add.sprite(width-width+120,height-height+60,'menuButtons','editorb0.png');
         menuButton.setInteractive();
         menuButton.on('pointerdown', function(pointer){
         this.scene.start('MainMenu')
          },this)
         menuButton.setScrollFactor(0);
-
+} 
 
       /*   //TEST
         buttonTest = this.add.button(width- widthPercentage*5, height - heightPercentage*20, 'buttons', testOnClick, this, "waterbutton0.png","waterbuttonpush.png", "waterbuttonpush.png");
@@ -41,4 +41,3 @@ function onOut (buttonGroup) {
 
 
 
-}
