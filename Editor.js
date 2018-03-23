@@ -3,18 +3,26 @@ var marker;
 var map;
 var mapWidth;
 var mapHeight;
+<<<<<<< HEAD
 var cameras;
 var BKey;
 var width
 var height
 var selectedTile = 1
+=======
+
+>>>>>>> master
 class Editor extends Phaser.Scene{
   constructor() {
     super({key:'Editor'});
   }
   
+<<<<<<< HEAD
 //PRELOAD <=======================================================================================================================
 preload(){
+=======
+  preload(){
+>>>>>>> master
     var spriteMap = "main"
     var textureURL = 'assets/main.png'
     var atlasURL = 'assets/main.json'
@@ -28,6 +36,7 @@ preload(){
     this.load.image('terrain2', 'assets/terrain2.png'); 
   }
 
+<<<<<<< HEAD
 // CREATE<=======================================================================================================================
 create(){
 
@@ -62,12 +71,32 @@ create(){
     
     //Create cursors to be able to move camera around and their configuration
     var cursors = this.input.keyboard.createCursorKeys();
+=======
+
+  create(){
+    mapWidth = 150
+    mapHeight = 150
+    //Layer creation
+     map = this.make.tilemap({ width: mapWidth, height: mapHeight, tileWidth: 32, tileHeight: 32, key:"map"});
+    var tiles = map.addTilesetImage('terrain2', null, 32, 64);
+    var layer = map.createBlankDynamicLayer('layer1', tiles);
+    layer.randomize(0, 0, map.width, map.height, [ 0]);
+
+    marker = this.add.graphics();
+    marker.lineStyle(2, 0x000000, 1);
+    marker.strokeRect(0, 0, 6 * map.tileWidth, 6 * map.tileHeight);
+
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+ var cursors = this.input.keyboard.createCursorKeys();
+>>>>>>> master
     var controlConfig = {
         camera: this.cameras.main,
         left: cursors.left,
         right: cursors.right,
         up: cursors.up,
         down: cursors.down,
+<<<<<<< HEAD
         speed: 0.5,
         disableCull: true,
         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
@@ -80,12 +109,24 @@ create(){
         x: width-width+80,
         y: height-height+20,
         text: 'Biffin Editor refactor 0.01',
+=======
+        speed: 0.5
+    };
+    controls = new Phaser.Cameras.Controls.Fixed(controlConfig);
+     
+     //Some basic text to show we're awesome
+    var text = this.make.text({
+        x: width-width+80,
+        y: height-height+20,
+        text: 'Biffin Editor refactor',
+>>>>>>> master
         origin: 0.5,
         wordWrap: { width: 300 },
         style: {
             font: 'bold 12px Arial',
             fill: 'white',
         }
+<<<<<<< HEAD
        })
       // Sets anchored to screen
        text.setScrollFactor(0);
@@ -127,4 +168,42 @@ update (time, delta){
    }
 
 
+=======
+         
+       })
+          // Sets anchored to screen
+       text.setScrollFactor(0);
+      //Create Back to menu Button by grabbing image from set
+    var menuButton = this.add.sprite(width-width+120,height-height+60,'menuButtons','editorb0.png')
+    menuButton.setInteractive();
+    menuButton.on('pointerdown', function(pointer){
+      this.scene.start('MainMenu')
+    },this)
+      menuButton.setScrollFactor(0)
+
+
+      }
+ update (time, delta){
+    controls.update(delta);
+
+
+    var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
+
+    // Rounds down to nearest tile
+    var pointerTileX = map.worldToTileX(worldPoint.x);
+    var pointerTileY = map.worldToTileY(worldPoint.y);
+
+    // Snap to tile coordinates, but in world space
+    marker.x = map.tileToWorldX(pointerTileX);
+    marker.y = map.tileToWorldY(pointerTileY);
+
+    if (this.input.manager.activePointer.isDown)
+    {
+        // Fill the tiles within an area with grass (tile id = 1)
+        map.fill(1, marker.x,marker.y, 6, 6);
+    }
+ }
+
+
+>>>>>>> master
 }

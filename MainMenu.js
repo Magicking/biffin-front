@@ -15,6 +15,7 @@ class MainMenu extends Phaser.Scene{
 		menuButton.on('pointerdown', function(pointer){
 			this.scene.start('Editor')
 		},this)
+<<<<<<< HEAD
 		//Some basic text to show we're awesome and show version
    		 var text = this.make.text({
         x: width-width+80,
@@ -27,6 +28,8 @@ class MainMenu extends Phaser.Scene{
             fill: 'white',
         }
        })
+=======
+>>>>>>> master
 
 	}
 }
