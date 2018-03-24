@@ -8,7 +8,35 @@ function createButtons (){
         this.scene.start('MainMenu')
          },this)
         menuButton.setScrollFactor(0);
+
+  
+    var eraserButton = this.add.sprite(width-width+80,height-height+132,'buttons','eraserbutton0.png','eraserbuttonpush.png');
+        eraserButton.setInteractive();
+        eraserButton.setScrollFactor(0);
+        eraserButton.on('pointerdown', function(pointer){
+            selectedTile = 0
+            selectedLayer = terrainLayer
+        })
+
+    var forestButton = this.add.sprite(width-width+80,height-height+174,'buttons','forestbutton0.png')
+        forestButton.setInteractive();
+        forestButton.setScrollFactor(0);
+        forestButton.on('pointerdown', function(pointer){
+            selectedTile = 3
+            selectedLayer = objectLayer
+        })
+
+    var mountainButton = this.add.sprite(width-width+80,height-height+216,'buttons','mountainbutton0.png')
+        mountainButton.setInteractive();
+        mountainButton.setScrollFactor(0);
+        mountainButton.on('pointerdown', function(pointer){
+            selectedTile = 4
+        })
+
+
+    
 } 
+
 
       /*   //TEST
         buttonTest = this.add.button(width- widthPercentage*5, height - heightPercentage*20, 'buttons', testOnClick, this, "waterbutton0.png","waterbuttonpush.png", "waterbuttonpush.png");

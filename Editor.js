@@ -11,6 +11,7 @@ var terrainLayer
 var objectLayer
 var buildingLayer
 var selectedTile = 1
+var selectedLayer = terrainLayer;
 class Editor extends Phaser.Scene{
   constructor() {
     super({key:'Editor'});
@@ -100,7 +101,7 @@ create(){
 
            
     //Create Back to menu Button
-     //   createButtons();
+     createButtons.call(this)
 
     //Create Key for testing
         BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
@@ -124,12 +125,13 @@ update (time, delta){
       if (this.input.manager.activePointer.isDown)
       {
           // Fill the tiles within an area with grass (tile id = 1)
-      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, 6, 6);
+      selectedLayer.fill(selectedTile, marker.x/32, marker.y/32, 6, 6);
       }
       if (this.input.manager.KeyCodes)
       if (BKey.isDown){
-        this.cameras.main.width += 200
-        this.cameras.main.x -=100
+      this.cameras.main.setPosition(-500, -400);
+      this.cameras.setSize(2000, 1600);
+      this.cameras.setZoom(0.5);
         console.log('resizing')
       }
    }

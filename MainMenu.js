@@ -6,6 +6,7 @@ class MainMenu extends Phaser.Scene{
   preload(){
     
     this.load.atlas('menuButtons', 'assets/menuButtons.png', 'assets/menuButtons.json');
+    this.load.atlas('buttons','assets/buttons.png','assets/buttons.json')
   }
  
   create(){
