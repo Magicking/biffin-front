@@ -2,7 +2,7 @@ function createButtons (){
  
 
 //Create Back to menu Button
-    var menuButton = this.add.sprite(width-width+120,height-height+60,'menuButtons','editorb0.png');
+        var menuButton = this.add.sprite(width-width+120,height-height+60,'menuButtons','editorb0.png');
         menuButton.setInteractive();
         menuButton.on('pointerdown', function(pointer){
         this.scene.start('MainMenu')

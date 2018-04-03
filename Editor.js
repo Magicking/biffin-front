@@ -16,6 +16,7 @@ class Editor extends Phaser.Scene{
     super({key:'Editor'});
   }
   
+
 //PRELOAD <=======================================================================================================================
 preload(){
     var spriteMap = "main"
@@ -54,10 +55,13 @@ create(){
     objectLayer.depth = 1
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
     buildingLayer.depth = 2
+   
     //Randomly creates Water on terrainLayer
     terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
+    //Create  10x10 small testing island with mountains and forests on it
     terrainLayer.fill (1, 9,9,12,12)
     objectLayer.fill(5, 10, 10, 10,10)
+    objectLayer.fill(3, 12,13,3,5)
  
     // Create Paintbrush marker
     marker = this.add.graphics();
@@ -67,6 +71,13 @@ create(){
  
     //Set camera bounds to mapsize
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+    //Creating Minimap
+    //  The miniCam is 400px wide, so can display the whole world at a zoom of 0.2
+    this.minimap = this.cameras.add(200, 10, 400, 100).setZoom(0.2);
+    this.minimap.setBackgroundColor(0x002244);
+    this.minimap.scrollX = 1600;
+    this.minimap.scrollY = 300;
 
      //Create cursors to be able to move camera around and their configuration
     var cursors = this.input.keyboard.createCursorKeys();
@@ -100,10 +111,13 @@ create(){
 
            
     //Create Back to menu Button
-     //   createButtons();
+
+    createButtons.call(this); 
 
     //Create Key for testing
         BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+
+
 }//End of Create
  
 //UPDATE <=======================================================================================================================
@@ -126,10 +140,9 @@ update (time, delta){
           // Fill the tiles within an area with grass (tile id = 1)
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, 6, 6);
       }
-      if (this.input.manager.KeyCodes)
+    
       if (BKey.isDown){
-        this.cameras.main.width += 200
-        this.cameras.main.x -=100
+        this.SetTop(0);
         console.log('resizing')
       }
    }
