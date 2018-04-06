@@ -5,12 +5,20 @@ var mapWidth;
 var mapHeight;
 var cameras;
 var BKey;
+var CKey;
 var width
 var height
 var terrainLayer
 var objectLayer
 var buildingLayer
 var selectedTile = 1
+var zoomFactory = 1
+var GKey
+var width = window.innerWidth;
+var height = window.innerHeigth;
+var mainCam
+var frame
+var displayWidth
 class Editor extends Phaser.Scene{
   constructor() {
     super({key:'Editor'});
@@ -34,6 +42,10 @@ preload(){
  
 // CREATE<=======================================================================================================================
 create(){
+
+  mainCam = this.cameras.main
+  var emptyTexture = this.textures.createCanvas('lol', window.innerWidth, window.innerHeigth);
+     frame = new Phaser.Textures.Frame(emptyTexture,'cameraFrame',0,0,window.innerWidth,window.innerHeigth)
      //setting Map width and height in number of tiles
     mapWidth = 150
     mapHeight = 150
@@ -45,40 +57,7 @@ create(){
       tileWidth: 32, 
       tileHeight: 32, 
       });
- 
-    //Adding Tileset
-    var tiles = map.addTilesetImage('terrain2', null, 32, 64);
-    //Create blank tilemap layers and give them render orders.
-    terrainLayer = map.createBlankDynamicLayer('terrains', tiles);
-    terrainLayer.depth = 0
-    objectLayer = map.createBlankDynamicLayer('objects', tiles);
-    objectLayer.depth = 1
-    buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
-    buildingLayer.depth = 2
-   
-    //Randomly creates Water on terrainLayer
-    terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
-    //Create  10x10 small testing island with mountains and forests on it
-    terrainLayer.fill (1, 9,9,12,12)
-    objectLayer.fill(5, 10, 10, 10,10)
-    objectLayer.fill(3, 12,13,3,5)
- 
-    // Create Paintbrush marker
-    marker = this.add.graphics();
-    //Black and 2 px wide
-    marker.lineStyle(2, 0x000000, 1);
-    marker.strokeRect(0,-32, 6 * map.tileWidth, 6 * map.tileHeight);
- 
-    //Set camera bounds to mapsize
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-
-    //Creating Minimap
-    //  The miniCam is 400px wide, so can display the whole world at a zoom of 0.2
-    this.minimap = this.cameras.add(200, 10, 400, 100).setZoom(0.2);
-    this.minimap.setBackgroundColor(0x002244);
-    this.minimap.scrollX = 1600;
-    this.minimap.scrollY = 300;
-
+    
      //Create cursors to be able to move camera around and their configuration
     var cursors = this.input.keyboard.createCursorKeys();
     var controlConfig = {
@@ -88,12 +67,45 @@ create(){
         up: cursors.up,
         down: cursors.down,
         speed: 0.5,
-        disableCull: true,
         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
     };
     controls = new Phaser.Cameras.Controls.Fixed(controlConfig);
-     
+     this.cameras.main.setZoom(1)
+     this.cameras.main.disableCull = true;
+
+    //Adding Tileset
+    var tiles = map.addTilesetImage('terrain2', null, 32, 32);
+    //Create blank tilemap layers and give them render orders.
+    terrainLayer = map.createBlankDynamicLayer('terrains', tiles);
+    terrainLayer.depth = 0
+    objectLayer = map.createBlankDynamicLayer('objects', tiles);
+   objectLayer.depth = 1
+    buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
+    buildingLayer.depth = 2
+   
+    //Randomly creates Water on terrainLayer
+    terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
+    //Create  10x10 small testing island with mountains and forests on it
+    terrainLayer.fill (1, 9,9,12,12)
+    objectLayer.fill(5, 10, 10, 10,10)
+    objectLayer.fill(3, 12,13,3,5)
+
+    
+    // Create Paintbrush marker
+    marker = this.add.graphics();
+    //Black and 2 px wide
+    marker.lineStyle(2, 0x000000, 1);
+    marker.strokeRect(0,0, 6 * map.tileWidth, 6 * map.tileHeight);
+ 
+   
+    //Creating Minimap
+ 
+    var minimap = this.cameras.add(200, 10, 400, 100).setZoom(0.3);
+    minimap.setBackgroundColor(0x002244);
+
+
+    
     //Some basic text to show we're awesome and show version
     var text = this.make.text({
         x: width-width+80,
@@ -105,9 +117,20 @@ create(){
             font: 'bold 12px Arial',
             fill: 'white',
         }
+
+
        })
+
+    var imageTest = this.add.sprite(2500,120,'terrain2')
+
       // Sets anchored to screen
        text.setScrollFactor(0);
+      
+      //Set camera bounds to mapsize
+     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+      //this.cameras.main.setSize(map.widthInPixels,map.heightInPixels)
+      //this.cameras.main.setPosition(0,0)
+     // this.cameras.main.setViewport(0,0,400, 150)
 
            
     //Create Back to menu Button
@@ -116,14 +139,16 @@ create(){
 
     //Create Key for testing
         BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
-
+        CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+         GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
 
 }//End of Create
  
 //UPDATE <=======================================================================================================================
 update (time, delta){
-      width = window.innerWidth;
-      height = window.innerHeigth;
+      
+      
+     
       controls.update(delta);
       var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
  
@@ -140,11 +165,25 @@ update (time, delta){
           // Fill the tiles within an area with grass (tile id = 1)
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, 6, 6);
       }
-    
-      if (BKey.isDown){
-        this.SetTop(0);
-        console.log('resizing')
+      if (BKey.isDown & zoomFactory<2) {
+        zoomFactory = zoomFactory+0.05
+        
       }
+      if (CKey.isDown & zoomFactory>0.5){
+       zoomFactory = zoomFactory-0.05
+       
+      }
+     // this.cameras.main.zoom = zoomFactory
+      if (GKey.isDown ) {
+        
+        terrainLayer.setDisplaySize(frame)
+        objectLayer.setDisplaySize(frame)
+        buildingLayer.setDisplaySize(frame)
+        //this.cameras.main.width = width*zoomFactory
+       // this.cameras.main.setViewport(100,100,800, 600)
+      }
+      
+
    }
  
  
