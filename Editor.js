@@ -14,11 +14,14 @@ var buildingLayer
 var selectedTile = 1
 var zoomFactory = 1
 var GKey
+var HKey
 var width = window.innerWidth;
 var height = window.innerHeigth;
 var mainCam
 var frame
 var displayWidth
+var brushSize
+var selectedLayer
 class Editor extends Phaser.Scene{
   constructor() {
     super({key:'Editor'});
@@ -83,7 +86,7 @@ create(){
    objectLayer.depth = 1
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
     buildingLayer.depth = 2
-   
+    selectedLayer = 1
     //Randomly creates Water on terrainLayer
     terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
     //Create  10x10 small testing island with mountains and forests on it
@@ -94,9 +97,10 @@ create(){
     
     // Create Paintbrush marker
     marker = this.add.graphics();
+    brushSize = 6
     //Black and 2 px wide
     marker.lineStyle(2, 0x000000, 1);
-    marker.strokeRect(0,0, 6 * map.tileWidth, 6 * map.tileHeight);
+    marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
  
    
     //Creating Minimap
@@ -141,6 +145,7 @@ create(){
         BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
          GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+          HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
 }//End of Create
  
@@ -159,29 +164,55 @@ update (time, delta){
       // Snap to tile coordinates, but in world space
       marker.x = map.tileToWorldX(pointerTileX);
       marker.y = map.tileToWorldY(pointerTileY);
- 
-      if (this.input.manager.activePointer.isDown)
+      brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
+      
+      if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
       {
-          // Fill the tiles within an area with grass (tile id = 1)
-      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, 6, 6);
+       selectedTile= -1   // Fill the tiles within the terrain Layer with grass (tile id = 1)
+      terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
+      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      }
+
+
+
+      if (this.input.manager.activePointer.isDown && selectedLayer==1)
+      {
+          // Fill the tiles within the terrain Layer with grass (tile id = 1)
+      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      }
+      if (this.input.manager.activePointer.isDown && selectedLayer==2)
+      {
+          // Fill the tiles within the object Layer with grass (tile id = 1)
+      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      }
+       if (this.input.manager.activePointer.isDown && selectedLayer==3)
+      {
+          // Fill the tiles within the terrain Layer with grass (tile id = 1)
+      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       }
       if (BKey.isDown & zoomFactory<2) {
         zoomFactory = zoomFactory+0.05
         
       }
       if (CKey.isDown & zoomFactory>0.5){
-       zoomFactory = zoomFactory-0.05
-       
+       zoomFactory = zoomFactory-0.05 
       }
+
      // this.cameras.main.zoom = zoomFactory
       if (GKey.isDown ) {
-        
-        terrainLayer.setDisplaySize(frame)
-        objectLayer.setDisplaySize(frame)
-        buildingLayer.setDisplaySize(frame)
+       brushSize = brushSize-1
+       marker.clear();
+       marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
+        }
+       if (HKey.isDown ) {
+       brushSize = brushSize+1
+       marker.clear();
+       marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
+        }
         //this.cameras.main.width = width*zoomFactory
        // this.cameras.main.setViewport(100,100,800, 600)
-      }
+     
       
 
    }
