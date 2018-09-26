@@ -5,13 +5,14 @@ var mapWidth;
 var mapHeight;
 var cameras;
 var BKey;
-var width
-var height
-var terrainLayer
-var objectLayer
-var buildingLayer
-var selectedTile = 1
-var selectedLayer = terrainLayer;
+/*var width
+var height*/
+var terrainLayer;
+var objectLayer;
+var buildingLayer;
+var selectedTile = 1;
+var selectedLayer;
+
 class Editor extends Phaser.Scene{
   constructor() {
     super({key:'Editor'});
@@ -45,7 +46,7 @@ create(){
       tileWidth: 32, 
       tileHeight: 32, 
       });
- 
+   
     //Adding Tileset
     var tiles = map.addTilesetImage('terrain2', null, 32, 64);
     //Create blank tilemap layers and give them render orders.
@@ -56,8 +57,8 @@ create(){
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
     buildingLayer.depth = 2
     //Randomly creates Water on terrainLayer
-    terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
-    terrainLayer.fill (1, 9,9,12,12)
+    terrainLayer.randomize(0, 0, map.width, map.height, [0/*add tile index here to add to rng distribution*/]);
+    terrainLayer.fill(1, 9,9,12,12)
     objectLayer.fill(5, 10, 10, 10,10)
  
     // Create Paintbrush marker
@@ -65,10 +66,8 @@ create(){
     //Black and 2 px wide
     marker.lineStyle(2, 0x000000, 1);
     marker.strokeRect(0,-32, 6 * map.tileWidth, 6 * map.tileHeight);
- 
-    //Set camera bounds to mapsize
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-
+     selectedLayer = terrainLayer;
+    
      //Create cursors to be able to move camera around and their configuration
     var cursors = this.input.keyboard.createCursorKeys();
     var controlConfig = {
