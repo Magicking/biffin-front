@@ -1,6 +1,7 @@
 function createButtons (){
  
- var editorGUI = this.make.group()
+ var groupConfig = {}
+ var editorGUI = this.make.group(groupConfig)
 
 //Create Back to menu Button
     var menuButton = this.add.sprite(width-width+120,height-height+60,'menuButtons','editorb0.png');

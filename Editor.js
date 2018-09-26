@@ -73,7 +73,7 @@ create(){
         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
     };
-    controls = new Phaser.Cameras.Controls.Fixed(controlConfig);
+    controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
      this.cameras.main.setZoom(1)
      this.cameras.main.disableCull = true;
 
