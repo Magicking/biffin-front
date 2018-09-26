@@ -17,7 +17,7 @@ function createButtons (){
         eraserButton.depth = 5
         eraserButton.on('pointerdown', function(pointer){
             selectedTile = 0
-            selectedLayer = terrainLayer
+            selectedLayer = 'eraser'
         })
 
     var forestButton = this.add.sprite(width-width+80,height-height+174,'buttons','forestbutton0.png')
@@ -26,7 +26,7 @@ function createButtons (){
         forestButton.setScrollFactor(0);
         forestButton.on('pointerdown', function(pointer){
             selectedTile = 3
-            selectedLayer = objectLayer
+            selectedLayer = 2
         })
 
     var mountainButton = this.add.sprite(width-width+80,height-height+216,'buttons','mountainbutton0.png')
@@ -35,7 +35,15 @@ function createButtons (){
         mountainButton.setScrollFactor(0);
         mountainButton.on('pointerdown', function(pointer){
             selectedTile = 5
-            selectedLayer = objectLayer
+            selectedLayer = 2
+        })
+    editorGUI.riverButton = this.add.sprite(width-width+80,height-height+258,'buttons','riverbutton0.png','riverbuttonpush.png');
+        
+      
+        editorGUI.depth = 5
+        editorGUI.riverButton.on('pointerdown', function(pointer){
+            selectedTile = 6
+            selectedLayer = terrainLayer
         })
 
 
@@ -71,6 +79,3 @@ function onOut (buttonGroup) {
     updateInput = true;
 }
 */
-
-
-
