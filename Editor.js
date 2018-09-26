@@ -47,7 +47,7 @@ preload(){
 create(){
 
   mainCam = this.cameras.main
-  var emptyTexture = this.textures.createCanvas('lol', window.innerWidth, window.innerHeigth);
+  var emptyTexture = this.textures.createCanvas('lol' /*BUG the key must be unique*/, window.innerWidth, window.innerHeigth);
      frame = new Phaser.Textures.Frame(emptyTexture,'cameraFrame',0,0,window.innerWidth,window.innerHeigth)
      //setting Map width and height in number of tiles
     mapWidth = 150
