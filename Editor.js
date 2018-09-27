@@ -20,8 +20,9 @@ var height = window.innerHeigth;
 var mainCam
 var frame
 var displayWidth
-var brushSize
-var selectedLayer
+var brushSize;
+var selectedLayer;
+var mapData = [];
 class Editor extends Phaser.Scene{
   constructor() {
     super({key:'Editor'});
@@ -30,6 +31,7 @@ class Editor extends Phaser.Scene{
 
 //PRELOAD <=======================================================================================================================
 preload(){
+
     var spriteMap = "main"
     var textureURL = 'assets/main.png'
     var atlasURL = 'assets/main.json'
@@ -94,6 +96,10 @@ create(){
     objectLayer.fill(5, 10, 10, 10,10)
     objectLayer.fill(3, 12,13,3,5)
 
+    //Saving layer data to mapData
+    mapData.push(terrainLayer.layer.data)
+    mapData.push(objectLayer.layer.data)
+    mapData.push(buildingLayer.layer.data)
     
     // Create Paintbrush marker
     marker = this.add.graphics();
@@ -213,6 +219,12 @@ update (time, delta){
         //this.cameras.main.width = width*zoomFactory
        // this.cameras.main.setViewport(100,100,800, 600)
      
+     if (this.input.manager.activePointer.isDown)
+    {
+      mapData.push(terrainLayer.layer.data)
+      mapData.push(objectLayer.layer.data)
+      mapData.push(buildingLayer.layer.data)
+    }
       
 
    }
