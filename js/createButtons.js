@@ -5,8 +5,9 @@ function createButtons (){
  editorGUI.setSize(120,258)
  editorGUI.setInteractive();
  editorGUI.setScrollFactor(0)
- editorGUI.tint = 0x000245;
+ editorGUI.tint = 0x000fff;
  editorGUI.depth = 5
+ 
 
 
 //Create Back to menu Button
@@ -46,9 +47,10 @@ function createButtons (){
             selectedTile = 8;
             selectedLayer = 1;
             marker.clear();
-       marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
+            marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
         })
 
-editorGUI.add([menuButton,eraserButton,forestButton,mountainButton,riverButton])
+//Add all buttons to editorGUI container
+editorGUI.add([menuButton,eraserButton,forestButton,mountainButton,riverButton,brushSizeTooltip])
     
 } 

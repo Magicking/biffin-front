@@ -24,7 +24,7 @@ var brushSize;
 var selectedLayer;
 var mapData = [];
 var sortedTiles
-
+var brushSizeTooltip
 
 class Editor extends Phaser.Scene{
   constructor() {
@@ -120,7 +120,20 @@ create(){
 */
     
     //Some basic text to show we're awesome and show version
-    var text = this.make.text({
+brushSizeTooltip = this.make.text({
+        x: 80,
+        y: 280,
+        text: 'Brush size: '+brushSize,
+        origin: 0.5,
+        wordWrap: { width: 300 },
+        style: {
+            font: 'bold 12px Arial',
+            fill: 'white',
+        }
+    })
+brushSizeTooltip.setScrollFactor(0)
+
+    var versionText = this.make.text({
         x: width-width+80,
         y: height-height+20,
         text: 'Biffin Editor refactor 0.01',
@@ -130,18 +143,16 @@ create(){
             font: 'bold 12px Arial',
             fill: 'white',
         }
-
-
        })
 
       // Sets anchored to screen
-       text.setScrollFactor(0);
+       versionText.setScrollFactor(0);
       
       //Set camera bounds to mapsize
      this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
            
-    //Create Back to menu Button
+    //Create GUI
 
     createButtons.call(this); 
 
@@ -169,6 +180,7 @@ update (time, delta){
       marker.x = map.tileToWorldX(pointerTileX);
       marker.y = map.tileToWorldY(pointerTileY);
       brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
+
       
       //
       if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
@@ -178,8 +190,6 @@ update (time, delta){
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       }
-
-
 
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
@@ -211,12 +221,14 @@ update (time, delta){
        brushSize = brushSize-1
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
+       brushSizeTooltip.text = 'Brush size: '+brushSize;
       };
 
        if (HKey.isDown ) {
        brushSize = brushSize+1
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
+       brushSizeTooltip.text = 'Brush size: '+brushSize;
       };
      
        //testing getTilesWithin
