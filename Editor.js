@@ -23,6 +23,9 @@ var displayWidth
 var brushSize;
 var selectedLayer;
 var mapData = [];
+var sortedTiles
+
+
 class Editor extends Phaser.Scene{
   constructor() {
     super({key:'Editor'});
@@ -85,7 +88,7 @@ create(){
     terrainLayer = map.createBlankDynamicLayer('terrains', tiles);
     terrainLayer.depth = 0
     objectLayer = map.createBlankDynamicLayer('objects', tiles);
-   objectLayer.depth = 1
+    objectLayer.depth = 1
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
     buildingLayer.depth = 2
     selectedLayer = 1
@@ -108,13 +111,13 @@ create(){
     marker.lineStyle(2, 0x000000, 1);
     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
  
-   
+  /* 
     //Creating Minimap
  
-    var minimap = this.cameras.add(200, 10, 400, 100).setZoom(0.3);
+    var minimap = this.cameras.add(25, 10, 400, 100).setZoom(0.1);
     minimap.setBackgroundColor(0x002244);
 
-
+*/
     
     //Some basic text to show we're awesome and show version
     var text = this.make.text({
@@ -131,16 +134,11 @@ create(){
 
        })
 
-    var imageTest = this.add.sprite(2500,120,'terrain2')
-
       // Sets anchored to screen
        text.setScrollFactor(0);
       
       //Set camera bounds to mapsize
      this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-      //this.cameras.main.setSize(map.widthInPixels,map.heightInPixels)
-      //this.cameras.main.setPosition(0,0)
-     // this.cameras.main.setViewport(0,0,400, 150)
 
            
     //Create Back to menu Button
@@ -150,8 +148,8 @@ create(){
     //Create Key for testing
         BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
-         GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
-          HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+        GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+        HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
 }//End of Create
  
@@ -172,9 +170,10 @@ update (time, delta){
       marker.y = map.tileToWorldY(pointerTileY);
       brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
       
+      //
       if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
       {
-       selectedTile= -1   // Fill the tiles within the terrain Layer with grass (tile id = 1)
+       selectedTile= -1   // Erases tiles on all layers and places water on terrain
       terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
@@ -182,50 +181,56 @@ update (time, delta){
 
 
 
-      if (this.input.manager.activePointer.isDown && selectedLayer==1)
-      {
+      if (this.input.manager.activePointer.isDown && selectedLayer==1) {
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      }
-      if (this.input.manager.activePointer.isDown && selectedLayer==2)
-      {
+      };
+
+      if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with grass (tile id = 1)
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      }
-       if (this.input.manager.activePointer.isDown && selectedLayer==3)
-      {
+      };
+
+       if (this.input.manager.activePointer.isDown && selectedLayer==3){
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      }
+      };
+
+
+      //Zoom Operation
       if (BKey.isDown & zoomFactory<2) {
         zoomFactory = zoomFactory+0.05
-        
-      }
+      };
+
       if (CKey.isDown & zoomFactory>0.5){
        zoomFactory = zoomFactory-0.05 
-      }
+      };
 
-     // this.cameras.main.zoom = zoomFactory
+      //Brush marker size management
       if (GKey.isDown ) {
        brushSize = brushSize-1
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
-        }
+      };
+
        if (HKey.isDown ) {
        brushSize = brushSize+1
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
-        }
-        //this.cameras.main.width = width*zoomFactory
-       // this.cameras.main.setViewport(100,100,800, 600)
+      };
      
-     if (this.input.manager.activePointer.isDown)
-    {
-      mapData.push(terrainLayer.layer.data)
-      mapData.push(objectLayer.layer.data)
-      mapData.push(buildingLayer.layer.data)
-    }
-      
+       //testing getTilesWithin
+       if (this.input.manager.activePointer.isDown){
+        var tmpInput
+        //logs what tiles are painted inside brush space
+        tmpInput = terrainLayer.getTilesWithin(marker.x/32, marker.y/32, brushSize, brushSize);
+
+        function filter_x(tmpInput) {
+        return tmpInput.x == marker.x/32 && tmpInput.y == marker.y/32;
+        }
+         sortedTiles = tmpInput.filter(filter_x);
+       console.log('this contains '+ sortedTiles)
+    };
 
    }
  
