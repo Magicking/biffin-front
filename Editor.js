@@ -52,8 +52,7 @@ preload(){
 create(){
 
   mainCam = this.cameras.main
-  var emptyTexture = this.textures.createCanvas('lol' /*BUG the key must be unique*/, window.innerWidth, window.innerHeigth);
-     frame = new Phaser.Textures.Frame(emptyTexture,'cameraFrame',0,0,window.innerWidth,window.innerHeigth)
+  
      //setting Map width and height in number of tiles
     mapWidth = 150
     mapHeight = 150
@@ -80,7 +79,6 @@ create(){
     };
     controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
      this.cameras.main.setZoom(1)
-     this.cameras.main.disableCull = true;
 
     //Adding Tileset
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
@@ -218,14 +216,14 @@ update (time, delta){
 
       //Brush marker size management
       if (GKey.isDown ) {
-       brushSize = brushSize-1
+       brushSize--;
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
        brushSizeTooltip.text = 'Brush size: '+brushSize;
       };
 
        if (HKey.isDown ) {
-       brushSize = brushSize+1
+       brushSize++;
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
        brushSizeTooltip.text = 'Brush size: '+brushSize;
