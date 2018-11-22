@@ -2,19 +2,34 @@ function createButtons (){
  
  var editorGUI = this.add.container(0,0);
  var inputIO = "enabled"
+
  editorGUI.setSize(120,258)
  editorGUI.setInteractive();
  editorGUI.setScrollFactor(0)
-
  editorGUI.tint = 0x000fff;
  editorGUI.setDepth(5);
-//This makes the main camera ignore the editorGUI container so it doesnt scale when zoomed 
-    this.cameras.main.ignore(editorGUI)
 
- //This camera only shows editorGUI camera
-var camGUI = this.cameras.add(0, 0, editorGUI.x, editorGUI.y)
-camGUI.ignore(marker)
+ //This makes the main camera ignore the editorGUI container so it doesnt scale when zoomed 
+ this.cameras.main.ignore(editorGUI)
 
+ var versionText = this.make.text({
+        x: width-width+80,
+        y: height-height+20,
+        text: 'Biffin Editor refactor 0.01',
+        origin: 0.5,
+        wordWrap: { width: 300 },
+        style: {
+            font: 'bold 12px Arial',
+            fill: 'white',
+        }
+       })
+
+      // Sets anchored to screen
+       versionText.setScrollFactor(0);
+
+ //This camera only shows editorGUI 
+ var camGUI = this.cameras.add(0, 0, editorGUI.x, editorGUI.y)
+ camGUI.ignore(marker,versionText)
 
 
 //Create Back to menu Button
@@ -27,8 +42,9 @@ camGUI.ignore(marker)
     var eraserButton = this.add.sprite(80,132,'buttons','eraserbutton0.png','eraserbuttonpush.png');
         eraserButton.setInteractive()
         eraserButton.on('pointerdown', function(pointer){
-            selectedTile = 0
-            selectedLayer = 'eraser'
+            console.log('eraser');
+            selectedTile = 0;
+            selectedLayer = 'eraser';
         })
 //Forest
     var forestButton = this.add.sprite(80,174,'buttons','forestbutton0.png')  
@@ -57,9 +73,9 @@ camGUI.ignore(marker)
             marker.clear();
             marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
         })
-        
+
 //Add all buttons to editorGUI container
-editorGUI.add([menuButton,eraserButton,forestButton,mountainButton,riverButton,brushSizeTooltip])
+editorGUI.add([menuButton,eraserButton,forestButton,mountainButton,riverButton,brushSizeTooltip,versionText])
     
 
 } 

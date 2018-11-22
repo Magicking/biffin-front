@@ -51,7 +51,7 @@ preload(){
 // CREATE<=======================================================================================================================
 create(){
 
-  mainCam = this.cameras.main
+    mainCam = this.cameras.main
   
      //setting Map width and height in number of tiles
     mapWidth = 150
@@ -115,10 +115,10 @@ create(){
     var minimap = this.cameras.add(25, 10, 400, 100).setZoom(0.1);
     minimap.setBackgroundColor(0x002244);
 
-*/
+  */
     
-    //Some basic text to show we're awesome and show version
-brushSizeTooltip = this.make.text({
+    //Dynamic text to show brush size
+    brushSizeTooltip = this.make.text({
         x: 80,
         y: 280,
         text: 'Brush size: '+brushSize,
@@ -129,36 +129,21 @@ brushSizeTooltip = this.make.text({
             fill: 'white',
         }
     })
-brushSizeTooltip.setScrollFactor(0)
+    brushSizeTooltip.setScrollFactor(0)
 
-    var versionText = this.make.text({
-        x: width-width+80,
-        y: height-height+20,
-        text: 'Biffin Editor refactor 0.01',
-        origin: 0.5,
-        wordWrap: { width: 300 },
-        style: {
-            font: 'bold 12px Arial',
-            fill: 'white',
-        }
-       })
-
-      // Sets anchored to screen
-       versionText.setScrollFactor(0);
+   
       
-      //Set camera bounds to mapsize
-     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-
-           
+    //Set camera bounds to mapsize
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+         
     //Create GUI
-
     createButtons.call(this); 
 
     //Create Key for testing
-        BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
-        CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
-        GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
-        HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+    BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+    CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+    GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+    HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
 }//End of Create
  
@@ -218,7 +203,7 @@ update (time, delta){
       if (GKey.isDown ) {
        brushSize--;
        marker.clear();
-       marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
+       marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight); //Bug with how we set the rectangle widths.
        brushSizeTooltip.text = 'Brush size: '+brushSize;
       };
 
