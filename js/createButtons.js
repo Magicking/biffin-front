@@ -22,14 +22,14 @@ var EditorGUI = new Phaser.Class({
     create: function ()
     {   
         //Create version text
-            var versionText = this.make.text({
+            var dragMe = this.make.text({
             x: 16,
             y: 10,
-            text: 'Biffin Editor refactor 0.02',
+            text: 'Tools - Drag me around',
             wordWrap: { width: 300 },
             style: {
-                font: 'bold 12px Arial',
-                fill: 'white',
+                font: ' 12px Arial',
+                fill: '0x585e65',
             }
             })
            
@@ -86,37 +86,44 @@ var EditorGUI = new Phaser.Class({
                 riverButton.on('pointerover', function(pointer) {input = 0});
                 riverButton.on('pointerdown', function(pointer){
                     brushSize = 1
-                    selectedTile = 8;
+                    selectedTile = 34;
                     selectedLayer = 1;
                     marker.clear();
                     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
                     brushSizeTooltip.text = 'Brush size: '+brushSize;
                 })
+        //Second Row
+            var grassButton = this.add.sprite(64+16,132,'buttons','grassbutton0.png')
+                grassButton.on('pointerover', function(pointer) {input = 0});
+                grassButton.setInteractive()
+                grassButton.on('pointerdown', function(pointer){
+                    selectedTile = 1
+                    selectedLayer = 1
+                })    
+
+
+
+
         //creating of draggable container and it's backdrop
             //Create Rectangle geometry object
-            var rectangleGUI = new Phaser.Geom.Rectangle(0,0,160,320)
+                var rectangleGUI = new Phaser.Geom.Rectangle(0,0,160,320)
             //Style it and fill it, this is the actual zone that will be used
-            var rectangleStyle = this.add.graphics({ fillStyle: { color: 0x164574 } });
-                rectangleStyle.fillRectShape(rectangleGUI);
+                var rectangleStyle = this.add.graphics({ fillStyle: { color: 0x7a91a8} });
+                    rectangleStyle.fillRoundedRect(rectangleGUI.x, rectangleGUI.y, rectangleGUI.width, rectangleGUI.height, 10);
             //create container containing all buttons and styling for the rectangle so it is draggable
-            var GUIcontainer = this.add.container(0, 0, [rectangleStyle,menuButton,eraserButton,forestButton,mountainButton,riverButton,brushSizeTooltip,versionText]);
-                GUIcontainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, rectangleGUI.width, rectangleGUI.height), Phaser.Geom.Rectangle.Contains);
+                var GUIcontainer = this.add.container(0, 0, [rectangleStyle,grassButton,menuButton,eraserButton,forestButton,mountainButton,riverButton,brushSizeTooltip,dragMe]);
+                    GUIcontainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, rectangleGUI.width, rectangleGUI.height), Phaser.Geom.Rectangle.Contains);
                 //indents GUIcontainer by 32px on both x and y.
-                GUIcontainer.setPosition(32,32)
-                this.input.setDraggable(GUIcontainer);
+                    GUIcontainer.setPosition(32,32)
+                    this.input.setDraggable(GUIcontainer);
             //Dragging for the GUI        
-            GUIcontainer.on('drag', function(pointer, dragX, dragY) {
-                this.x = dragX;
-                this.y = dragY;
-            });
-            GUIcontainer.on('pointerover', function(pointer) {
-                input = 0
-                console.log('GUI Over')
-            });
-            GUIcontainer.on('pointerout', function (pointer) {
-                input = 1
-                console.log('GUI Out')
-            });
+                    GUIcontainer.on('drag', function(pointer, dragX, dragY) {
+                    this.x = dragX;
+                    this.y = dragY;
+                    });
+                    //removes input on tilemap in order for gui to be correct
+                    GUIcontainer.on('pointerover', function(pointer) {input = 0});
+                    GUIcontainer.on('pointerout', function (pointer) {input = 1});
 
     },
 
