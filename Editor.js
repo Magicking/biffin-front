@@ -25,6 +25,10 @@ var selectedLayer;
 var mapData = [];
 var sortedTiles
 var brushSizeTooltip
+var input;
+
+
+
 
 class Editor extends Phaser.Scene{
   constructor() {
@@ -40,8 +44,6 @@ preload(){
     var atlasURL = 'assets/main.json'
     var tileSetImage = 'terrain2'
     this.load.atlas(spriteMap, textureURL, atlasURL);
-    this.load.atlas('buttons', 'assets/buttons.png', 'assets/buttons.json');
-    this.load.atlas('menuButtons', 'assets/menuButtons.png', 'assets/menuButtons.json');
     //loads tileset reference file
     this.load.tilemapTiledJSON('terrain2','assets/terrain2.json', null)   
     //Load tileset image
@@ -50,7 +52,10 @@ preload(){
  
 // CREATE<=======================================================================================================================
 create(){
+    //Determines wether or not brush can write on map
+    input = 1
 
+    //Camera creation
     mainCam = this.cameras.main
   
      //setting Map width and height in number of tiles
@@ -65,7 +70,7 @@ create(){
       tileHeight: 32, 
       });
     
-     //Create cursors to be able to move camera around and their configuration
+    //Create cursors to be able to move camera around and their configuration
     var cursors = this.input.keyboard.createCursorKeys();
     var controlConfig = {
         camera: this.cameras.main,
@@ -109,36 +114,20 @@ create(){
     marker.lineStyle(2, 0x000000, 1);
     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
  
-  /* 
+    /* 
     //Creating Minimap
  
     var minimap = this.cameras.add(25, 10, 400, 100).setZoom(0.1);
     minimap.setBackgroundColor(0x002244);
 
-  */
-    
-    //Dynamic text to show brush size
-    brushSizeTooltip = this.make.text({
-        x: 80,
-        y: 280,
-        text: 'Brush size: '+brushSize,
-        origin: 0.5,
-        wordWrap: { width: 300 },
-        style: {
-            font: 'bold 12px Arial',
-            fill: 'white',
-        }
-    })
-    brushSizeTooltip.setScrollFactor(0)
-
-   
+    */
       
     //Set camera bounds to mapsize
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-         
-    //Create GUI
+ 
+    //Create GUI scene
     createButtons.call(this); 
-
+  
     //Create Key for testing
     BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
     CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
@@ -150,8 +139,6 @@ create(){
 //UPDATE <=======================================================================================================================
 update (time, delta){
       
-      
-     
       controls.update(delta);
       var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
  
@@ -163,8 +150,8 @@ update (time, delta){
       marker.x = map.tileToWorldX(pointerTileX);
       marker.y = map.tileToWorldY(pointerTileY);
       brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
-
       
+      if (input == 1){
       //
       if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
       {
@@ -188,8 +175,7 @@ update (time, delta){
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
-
-
+      }
       //Zoom Operation
       if (BKey.isDown & zoomFactory<2) {
         zoomFactory = zoomFactory+0.05
@@ -229,5 +215,6 @@ update (time, delta){
 
    }
  
- 
+
 }
+
