@@ -160,22 +160,27 @@ update (time, delta){
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       }
-
+      
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
+
 
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with grass (tile id = 1)
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
 
+
        if (this.input.manager.activePointer.isDown && selectedLayer==3){
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
+
       }
+
+      dynamicEditing.call(this)
       //Zoom Operation
       if (BKey.isDown & zoomFactory<2) {
         zoomFactory = zoomFactory+0.05
@@ -190,14 +195,14 @@ update (time, delta){
        brushSize--;
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight); //Bug with how we set the rectangle widths.
-       brushSizeTooltip.text = 'Brush size: '+brushSize;
+       brushSizeTooltip.text = brushSize;
       };
 
        if (HKey.isDown ) {
        brushSize++;
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
-       brushSizeTooltip.text = 'Brush size: '+brushSize;
+       brushSizeTooltip.text = brushSize;
       };
      
        //testing getTilesWithin
