@@ -160,24 +160,21 @@ update (time, delta){
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       }
-      
+      /*
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
-
-
+*/
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with grass (tile id = 1)
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
 
-
        if (this.input.manager.activePointer.isDown && selectedLayer==3){
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
-
       }
 
       dynamicEditing.call(this)

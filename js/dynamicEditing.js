@@ -4,11 +4,11 @@ var editTerrain = console.log('spoop')
 function dynamicEditing(){
 //dynamic terrain editing (water becoming beach etc)
 
- editTerrain =  map.getTileAt(marker.x/32,marker.y/32,terrainLayer);
+ editTerrain =  terrainLayer.getTileAt(marker.x/32,marker.y/32,terrainLayer);
 
 // Road Dynamic detection, checks if selectedTile is road
  if (selectedTile == 24 && this.input.mousePointer.isDown && input == 1) {
-      console.log("Detecting...")
+    
        var bitValue;
 
       //This removes the tile on objectLayer to make way for the road
@@ -21,7 +21,12 @@ function dynamicEditing(){
           map.putTileAt(14, marker.x/32, marker.y/32, buildingLayer);
         }
 
-      
+      //Road Makes Bridge over water
+      if (editTerrain.index == 0)
+        {
+          console.log('Bridging...')
+          map.putTileAt(14, marker.x, marker.y,buildingLayer);
+        }
 
 
 var onHasTile = map.hasTileAt(marker.x/32,marker.y/32, buildingLayer);
@@ -141,11 +146,7 @@ if(bitValue == 15){
   map.putTileAt(26, marker.x/32, marker.y/32, buildingLayer)
 }
 
-//Road Makes Bridge over water
-      if (editTerrain.index == 0)
-        {
-          map.putTileAt(14, marker.x/32, marker.y/32,buildingLayer);
-        }
+
 
 }//End of Road Editing
 
