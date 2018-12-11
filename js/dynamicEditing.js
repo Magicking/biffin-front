@@ -1,10 +1,9 @@
-var editTerrain = console.log('spoop')
 
 
 function dynamicEditing(){
 //dynamic terrain editing (water becoming beach etc)
 
- editTerrain =  terrainLayer.getTileAt(marker.x/32,marker.y/32,terrainLayer);
+ var editTerrain =  map.getTileAt(marker.x/32,marker.y/32,terrainLayer);
 
 // Road Dynamic detection, checks if selectedTile is road
  if (selectedTile == 24 && this.input.mousePointer.isDown && input == 1) {

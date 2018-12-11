@@ -15,6 +15,7 @@ var selectedTile = 1
 var zoomFactory = 1
 var GKey
 var HKey
+var SKey
 var width = window.innerWidth;
 var height = window.innerHeigth;
 var mainCam
@@ -26,8 +27,12 @@ var mapData = [];
 var sortedTiles
 var brushSizeTooltip
 var input;
-
-
+var xMostTile
+var culled
+var testArray
+var allowZoom
+var controlConfig
+var test
 
 
 class Editor extends Phaser.Scene{
@@ -52,13 +57,14 @@ preload(){
  
 // CREATE<=======================================================================================================================
 create(){
+    allowZoom = true
     //Determines wether or not brush can write on map
     input = 1
 
     //Camera creation
     mainCam = this.cameras.main
   
-     //setting Map width and height in number of tiles
+    //setting Map width and height in number of tiles
     mapWidth = 150
     mapHeight = 150
  
@@ -72,8 +78,8 @@ create(){
     
     //Create cursors to be able to move camera around and their configuration
     var cursors = this.input.keyboard.createCursorKeys();
-    var controlConfig = {
-        camera: this.cameras.main,
+    controlConfig = {
+        camera: mainCam,
         left: cursors.left,
         right: cursors.right,
         up: cursors.up,
@@ -83,8 +89,9 @@ create(){
         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
     };
     controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
-     this.cameras.main.setZoom(1)
+  
 
+   
     //Adding Tileset
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
     //Create blank tilemap layers and give them render orders.
@@ -102,6 +109,16 @@ create(){
     objectLayer.fill(5, 10, 10, 10,10)
     objectLayer.fill(3, 12,13,3,5)
 
+    //get top left and bottom right tiles and check if both are visible, 
+    //if both are visible, do not allow zoom.
+    var topLeft = this.add.sprite(0,0)
+    var bottomRight = this.add.sprite(mapWidth*32,mapHeight*32)
+    testArray = []
+    testArray.push(topLeft)
+    testArray.push(bottomRight)
+
+     
+        
     //Saving layer data to mapData
     mapData.push(terrainLayer.layer.data)
     mapData.push(objectLayer.layer.data)
@@ -113,17 +130,9 @@ create(){
     //Black and 2 px wide
     marker.lineStyle(2, 0x000000, 1);
     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
- 
-    /* 
-    //Creating Minimap
- 
-    var minimap = this.cameras.add(25, 10, 400, 100).setZoom(0.1);
-    minimap.setBackgroundColor(0x002244);
-
-    */
       
     //Set camera bounds to mapsize
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    mainCam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
  
     //Create GUI scene
     createButtons.call(this); 
@@ -133,14 +142,22 @@ create(){
     CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
     GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
     HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+    SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
 }//End of Create
  
 //UPDATE <=======================================================================================================================
 update (time, delta){
+
+      //Test to see both extremities
+      culled = mainCam.cull(testArray)
+      if(culled.length ==2){
+        console.log('seeing both extremities')
+        mainCam.inputEnabled = false          //Find way to disable zooming out here
+      }
       
       controls.update(delta);
-      var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
+      var worldPoint = this.input.activePointer.positionToCamera(mainCam);
  
       // Rounds down to nearest tile
       var pointerTileX = map.worldToTileX(worldPoint.x);
@@ -160,12 +177,12 @@ update (time, delta){
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       }
-      /*
+      
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
           // Fill the tiles within the terrain Layer with grass (tile id = 1)
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
-*/
+
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with grass (tile id = 1)
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
@@ -178,14 +195,6 @@ update (time, delta){
       }
 
       dynamicEditing.call(this)
-      //Zoom Operation
-      if (BKey.isDown & zoomFactory<2) {
-        zoomFactory = zoomFactory+0.05
-      };
-
-      if (CKey.isDown & zoomFactory>0.5){
-       zoomFactory = zoomFactory-0.05 
-      };
 
       //Brush marker size management
       if (GKey.isDown ) {
@@ -202,20 +211,53 @@ update (time, delta){
        brushSizeTooltip.text = brushSize;
       };
      
-       //testing getTilesWithin
-       if (this.input.manager.activePointer.isDown){
-        var tmpInput
-        //logs what tiles are painted inside brush space
-        tmpInput = terrainLayer.getTilesWithin(marker.x/32, marker.y/32, brushSize, brushSize);
+      if (BKey.isDown ){
+        console.log('Bkey')
+        test = objectLayer.getTileAt(20,20)
+      }
+   
+       //Save on pressing S
+       if (SKey.isDown){
+          //This is our map's save object, it will contain all layers and arrays containing the tiles.
+          var mapSave = {terrainLayer:[],
+                         objectLayer:[],
+                         buildingLayer:[],
+                          };
+         
+          var terrainCallback = function(tile){
 
-        function filter_x(tmpInput) {
-        return tmpInput.x == marker.x/32 && tmpInput.y == marker.y/32;
-        }
-         sortedTiles = tmpInput.filter(filter_x);
-       console.log('this contains '+ sortedTiles)
-    };
+            var tmp = terrainLayer.getTileAt(tile.x,tile.y, true);
+            mapSave.terrainLayer.push({index:tmp.index,x:tmp.x,y:tmp.y});
 
-   }
+          };
+
+          var objectCallback = function(tile){
+
+            var tmp = objectLayer.getTileAt(tile.x,tile.y, true);
+            mapSave.objectLayer.push({index:tmp.index,
+                                      x:tmp.x,
+                                      y:tmp.y});
+
+          };
+
+          var buildingCallback = function(tile){
+
+            var tmp = buildingLayer.getTileAt(tile.x,tile.y,true);
+            mapSave.buildingLayer.push({index:tmp.index,x:tmp.x,y:tmp.y});
+
+          };
+
+          console.log('Saving layers...');
+
+          terrainLayer.forEachTile(terrainCallback);
+          objectLayer.forEachTile(objectCallback);
+          buildingLayer.forEachTile(buildingCallback);
+
+          console.log('Saved all layers.');
+
+            };
+
+           }
  
 
 }
