@@ -3,7 +3,7 @@
 function dynamicEditing(){
 //dynamic terrain editing (water becoming beach etc)
 
- var editTerrain =  map.getTileAt(marker.x/32,marker.y/32,terrainLayer);
+ var editTerrain =  terrainLayer.getTileAt(marker.x/32,marker.y/32 );
 
 // Road Dynamic detection, checks if selectedTile is road
  if (selectedTile == 24 && this.input.mousePointer.isDown && input == 1) {
@@ -11,28 +11,23 @@ function dynamicEditing(){
        var bitValue;
 
       //This removes the tile on objectLayer to make way for the road
-      map.putTileAt(-1, marker.x/32, marker.y/32, objectLayer);
+      objectLayer.putTileAt(-1, marker.x/32, marker.y/32);
 
-    //Road makes bridge over river
-      if (editTerrain.index == 34)
-        {
+   
 
-          map.putTileAt(14, marker.x/32, marker.y/32, buildingLayer);
-        }
+      
 
-      //Road Makes Bridge over water
-      if (editTerrain.index == 0)
-        {
-          console.log('Bridging...')
-          map.putTileAt(14, marker.x, marker.y,buildingLayer);
-        }
+//Here we create variables that contains a boolean defining wether or not there is a tile
+var onHasTile = buildingLayer.hasTileAt(marker.x/32,marker.y/32);
 
+var upHasTile = buildingLayer.hasTileAt(marker.x/32,marker.y/32-1);
 
-var onHasTile = map.hasTileAt(marker.x/32,marker.y/32, buildingLayer);
-var upHasTile = map.hasTileAt(marker.x/32,marker.y/32-1, buildingLayer);
-var rightHasTile = map.hasTileAt(marker.x/32+1,marker.y/32, buildingLayer);
-var leftHasTile = map.hasTileAt(marker.x/32-1,marker.y/32, buildingLayer);
-var downHasTile = map.hasTileAt(marker.x/32,marker.y/32+1, buildingLayer);
+var rightHasTile = buildingLayer.hasTileAt(marker.x/32+1,marker.y/32);
+
+var leftHasTile = buildingLayer.hasTileAt(marker.x/32-1,marker.y/32);
+
+var downHasTile = buildingLayer.hasTileAt(marker.x/32,marker.y/32+1);
+
 
     if (onHasTile == true){
       onHasTile = 1;
@@ -40,7 +35,7 @@ var downHasTile = map.hasTileAt(marker.x/32,marker.y/32+1, buildingLayer);
     else { onHasTile = 0}
 
 
-      if (upHasTile == true){
+    if (upHasTile == true){
       upHasTile = 1;
     }
     else { upHasTile = 0}
@@ -57,94 +52,107 @@ var downHasTile = map.hasTileAt(marker.x/32,marker.y/32+1, buildingLayer);
     }
     else { downHasTile = 0}
 
+// these are the corresponding bit values
 var upValue = 1;
 var leftValue = 2;
 var rightValue = 4;
 var downValue = 8;
+var onValue = 0
 
-bitValue = upValue*upHasTile+leftValue*leftHasTile+rightValue*rightHasTile+ downValue*downHasTile;
+bitValue = upValue*upHasTile+leftValue*leftHasTile+rightValue*rightHasTile+ downValue*downHasTile+onValue*onHasTile;
 
 
 
 //no Road 
 if (bitValue == 0){
-  map.putTileAt(24, marker.x/32, marker.y/32, buildingLayer);
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
 }
 
 
 // If above has tile
 if (bitValue == 1){
-  map.putTileAt(25, marker.x/32, marker.y/32, buildingLayer);
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
 }
 
 // If right has tile
 if (bitValue == 4){
-  map.putTileAt(24, marker.x/32, marker.y/32, buildingLayer);
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
 }
 
 // If left has tile
 if (bitValue == 2){
-  map.putTileAt(24, marker.x/32, marker.y/32, buildingLayer);
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
 }
 // If left and right has tile
 if (bitValue == 6){
-  map.putTileAt(24, marker.x/32, marker.y/32, buildingLayer);
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
 }
 
 //if above and right have tile
 if(bitValue == 5){
-  map.putTileAt(29, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(29, marker.x/32, marker.y/32)
 }
 
 //if above and right and left have tile
 if(bitValue == 7){
-  map.putTileAt(28, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(28, marker.x/32, marker.y/32)
 }
 //if bottom have tile
 if(bitValue == 8){
-  map.putTileAt(25, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32)
 }
 
 //if bottom and up have tile
 if(bitValue == 9){
-  map.putTileAt(25, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32)
 }
 
 //if bottom and right have tile
 if(bitValue == 12){
-  map.putTileAt(31, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(31, marker.x/32, marker.y/32)
 }
 
 //if bottom and left have tile
 if(bitValue == 10){
-  map.putTileAt(30, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(30, marker.x/32, marker.y/32)
 }
 
 //if up and left have tile
 if(bitValue == 3){
-  map.putTileAt(32, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(32, marker.x/32, marker.y/32)
 }
 
 //if bottom and left  and right have tile
 if(bitValue == 14){
-  map.putTileAt(27, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(27, marker.x/32, marker.y/32)
 }
 
 //if bottom and left  and Up have tile
 if(bitValue == 11){
-  map.putTileAt(39, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(39, marker.x/32, marker.y/32)
 }
 
 //if bottom and right  and Up have tile
 if(bitValue == 13){
-  map.putTileAt(40, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(40, marker.x/32, marker.y/32)
 }
 
 //if crossroads
 if(bitValue == 15){
-  map.putTileAt(26, marker.x/32, marker.y/32, buildingLayer)
+  buildingLayer.putTileAt(26, marker.x/32, marker.y/32)
 }
 
+ //Road Makes Bridge over water
+      if (editTerrain.index == 0)
+        {
+          console.log('Bridging...')
+          buildingLayer.putTileAt(14, marker.x/32, marker.y/32)
+        }
+  //Road makes bridge over river
+      if (editTerrain.index == 34)
+        {
+          buildingLayer.putTileAt(14, marker.x/32, marker.y/32);
+        }
 
 
 }//End of Road Editing

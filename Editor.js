@@ -179,17 +179,18 @@ update (time, delta){
       }
       
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
-          // Fill the tiles within the terrain Layer with grass (tile id = 1)
+          // Fill the tiles within the terrain Layer with selectedTile 
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
 
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
-          // Fill the tiles within the object Layer with grass (tile id = 1)
+          // Fill the tiles within the object Layer with selectedTile 
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+
       };
 
        if (this.input.manager.activePointer.isDown && selectedLayer==3){
-          // Fill the tiles within the terrain Layer with grass (tile id = 1)
+          // Fill the tiles within the building Layer with selectedBuilding
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
       }
@@ -215,7 +216,7 @@ update (time, delta){
         console.log('Bkey')
         test = objectLayer.getTileAt(20,20)
       }
-   
+  
        //Save on pressing S
        if (SKey.isDown){
           //This is our map's save object, it will contain all layers and arrays containing the tiles.
@@ -254,6 +255,7 @@ update (time, delta){
           buildingLayer.forEachTile(buildingCallback);
 
           console.log('Saved all layers.');
+          //Needed: Placing the mapSave string in a Json file.
 
             };
 

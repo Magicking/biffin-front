@@ -88,6 +88,7 @@ var EditorGUI = new Phaser.Class({
                     selectedTile = 34;
                     selectedLayer = 1;
                     brushSize = 1
+                
                     marker.clear();
                     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
                     brushSizeTooltip.text = brushSize;
@@ -114,7 +115,30 @@ var EditorGUI = new Phaser.Class({
                     marker.clear();
                     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
                     brushSizeTooltip.text = brushSize;
+                }) 
+        //Buildings
+           
+            
+            var buildingsButton = this.add.sprite(64+16,216,'buttons','roadbutton0.png')
+                buildingsButton.on('pointerover', function(pointer) {input = 0});
+                buildingsButton.setInteractive()
+            //Drop Down menu for all buildings
+             
+            var buildingsDrop = new Phaser.Geom.Rectangle(buildingsButton.x, buildingsButton.y, 128,128)
+            var buildingsDropStyle = this.add.graphics({ fillStyle: { color: 0x7a91a8} })
+                buildingsDropStyle.fillRoundedRect(buildingsDrop.x, buildingsDrop.y, buildingsDrop.width, buildingsDrop.height, 11);
+                buildingsDropStyle.alpha = 0.65
+                buildingsDropStyle.setVisible(false)
+            var buildingsList = this.add.container(buildingsDrop.x, buildingsDrop.y, [buildingsButto,buildingsDropStyle]);
+                buildingsButton.on('pointerover', function(pointer){
+                    buildingsDropStyle.setVisible(true)
+                    input = 0 
+
+                })
+                 buildingsButton.on('pointerout', function(pointer){
+                    buildingsDropStyle.setVisible(false)
                 })    
+
         //Dynamic text to show brush size
             brushSizeTooltip = this.make.text({
             x: currentlySelected.x+46,
@@ -137,7 +161,8 @@ var EditorGUI = new Phaser.Class({
                     rectangleStyle.setAlpha(0.65)
             //create container containing all buttons and styling for the rectangle so it is draggable
                 var GUIcontainer = this.add.container(0, 0, [rectangleStyle,grassButton,menuButton,eraserButton,forestButton,mountainButton,riverButton,
-                    brushSizeTooltip,dragMe,roadButton,currentlySelected]);
+                    brushSizeTooltip,dragMe,roadButton,currentlySelected,buildingsButton,buildingsList]);
+                //Sets the interactive zone to the guicontainer 
                     GUIcontainer.setInteractive(new Phaser.Geom.Rectangle(0, 0, rectangleGUI.width, rectangleGUI.height), Phaser.Geom.Rectangle.Contains);
                 //indents GUIcontainer by 32px on both x and y.
                     GUIcontainer.setPosition(32,32)

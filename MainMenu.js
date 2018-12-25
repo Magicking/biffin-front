@@ -15,7 +15,11 @@ class MainMenu extends Phaser.Scene{
     menuButton.setInteractive();
     menuButton.on('pointerdown', function(pointer){
       this.scene.stop('MainMenu')
-      this.scene.start('Editor')
+
+      this.scene.start('Editor');
+      selectedLayer = 0;
+      selectedTile = 1
+      input = 0;
     },this)
 
     
