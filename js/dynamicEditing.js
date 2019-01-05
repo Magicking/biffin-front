@@ -7,7 +7,7 @@ function dynamicEditing(){
 
 // Road Dynamic detection, checks if selectedTile is road
  if (selectedTile == 24 && this.input.mousePointer.isDown && input == 1) {
-    
+      //8bit Bitmasking
        var bitValue;
 
       //This removes the tile on objectLayer to make way for the road
@@ -18,49 +18,88 @@ function dynamicEditing(){
       
 
 //Here we create variables that contains a boolean defining wether or not there is a tile
+// Tile itself
 var onHasTile = buildingLayer.hasTileAt(marker.x/32,marker.y/32);
 
+//North the Tile
 var upHasTile = buildingLayer.hasTileAt(marker.x/32,marker.y/32-1);
-
+//North East
+var upRightHasTile = buildingLayer.hasTileAt(marker.x/32+1,marker.y/32-1);
+//North West
+var upLeftHasTile = buildingLayer.hasTileAt(marker.x/32-1,marker.y/32-1);
+//East
 var rightHasTile = buildingLayer.hasTileAt(marker.x/32+1,marker.y/32);
-
+//West
 var leftHasTile = buildingLayer.hasTileAt(marker.x/32-1,marker.y/32);
-
+//South
 var downHasTile = buildingLayer.hasTileAt(marker.x/32,marker.y/32+1);
+//South East
+var downRightHasTile = buildingLayer.hasTileAt(marker.x/32+1,marker.y/32+1);
+//South West
+var downLeftHasTile = buildingLayer.hasTileAt(marker.x/32-1,marker.y/32+1);
 
-
+//Giving booleans values
+    //North
     if (onHasTile == true){
       onHasTile = 1;
     }
     else { onHasTile = 0}
 
+    //North West
+    if (upLeftHasTile == true){
+      upLeftHasTile = 1;
+    }
+    else { upLeftHasTile = 0}
 
+    //North East
+    if (upRightHasTile == true){
+      upRightHasTile = 1;
+    }
+    else { upRightHasTile = 0}
+
+    //North
     if (upHasTile == true){
       upHasTile = 1;
     }
     else { upHasTile = 0}
 
-
-      if (rightHasTile == true){
+    //East
+    if (rightHasTile == true){
       rightHasTile = 1;
     }
     else { rightHasTile = 0}
 
-
+    //South
     if (downHasTile == true){
       downHasTile = 1;
     }
     else { downHasTile = 0}
 
+    //South East
+    if (downRightHasTile == true){
+      downRightHasTile = 1;
+    }
+    else { downRightHasTile = 0}
+    //south West
+    if (downLeftHasTile == true){
+      downLeftHasTile = 1;
+    }
+    else { downLeftHasTile = 0}
+
+
 // these are the corresponding bit values
-var upValue = 1;
-var leftValue = 2;
-var rightValue = 4;
-var downValue = 8;
+var upLeftValue = 1
+var upValue = 2;
+var upRightValue = 4
+var leftValue = 8;
+var rightValue = 16;
+var downLeftValue = 32
+var downValue = 64;
+var downRightValue = 164
 var onValue = 0
 
-bitValue = upValue*upHasTile+leftValue*leftHasTile+rightValue*rightHasTile+ downValue*downHasTile+onValue*onHasTile;
-
+bitValue = upLeftValue*upLeftHasTile+upValue*upHasTile+upRightValue*upRightHasTile+leftValue*leftHasTile+rightValue*rightHasTile+downLeftValue*downLeftHasTile+downRightValue*downRightHasTile+downValue*downHasTile+onValue*onHasTile;
+console.log(bitValue)
 
 
 //no Road 
@@ -70,75 +109,154 @@ if (bitValue == 0){
 
 
 // If above has tile
-if (bitValue == 1){
+if (bitValue == 2){
   buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32-1)
+
 }
 
-// If right has tile
-if (bitValue == 4){
+//If South and SouthWest have a tile
+if (bitValue == 180){
   buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(30, marker.x/32+1, marker.y/32)
+
+}
+//If South and SouthWest have a tile
+if (bitValue == 40){
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(31, marker.x/32-1, marker.y/32)
+}
+//If West and NW have a tile
+if (bitValue == 9){
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(29, marker.x/32-1, marker.y/32)
+}
+//If East and NorthEast have a tile
+if (bitValue == 20){
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(32, marker.x/32+1, marker.y/32)
+}
+//If north and north west have a tile
+if (bitValue == 3){
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(30, marker.x/32, marker.y/32-1)
+
+}
+//If north and NE have a tile
+if (bitValue == 6){
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(31, marker.x/32, marker.y/32-1)
+}
+//If south and SE have a tile
+if (bitValue == 96){
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(32, marker.x/32, marker.y/32+1)
+}
+//If south and SW have a tile
+if (bitValue == 228){
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(29, marker.x/32, marker.y/32+1)
+}
+//If East,NE and SE have a tile
+if (bitValue == 184){
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(39, marker.x/32+1, marker.y/32)
+}
+//If West,NW and SW have a tile
+if (bitValue == 41){
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(40, marker.x/32-1, marker.y/32)
+}
+//If North, NE and NW have tile
+if (bitValue == 7){
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(27, marker.x/32, marker.y/32-1)
+}
+
+//If South, SE and SW have tile
+if (bitValue == 260){
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(28, marker.x/32, marker.y/32+1)
+}
+//If North and South have tile
+if (bitValue == 267 || bitValue == 263 || bitValue == 261 || bitValue == 102){
+  buildingLayer.putTileAt(27, marker.x/32, marker.y/32-1)
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(28, marker.x/32, marker.y/32+1)
+}
+//If East and West have tile
+if (bitValue == 225){
+  buildingLayer.putTileAt(40, marker.x/32-1, marker.y/32)
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+  buildingLayer.putTileAt(39, marker.x/32+1, marker.y/32)
+}
+// If right has tile
+if (bitValue == 16){
+  buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
+
 }
 
 // If left has tile
-if (bitValue == 2){
+if (bitValue == 8){
   buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
 }
 // If left and right has tile
-if (bitValue == 6){
+if (bitValue == 24){
   buildingLayer.putTileAt(24, marker.x/32, marker.y/32);
 }
 
 //if above and right have tile
-if(bitValue == 5){
+if(bitValue == 18){
   buildingLayer.putTileAt(29, marker.x/32, marker.y/32)
 }
 
 //if above and right and left have tile
-if(bitValue == 7){
+if(bitValue == 26){
   buildingLayer.putTileAt(28, marker.x/32, marker.y/32)
 }
 //if bottom have tile
-if(bitValue == 8){
+if(bitValue == 64){
   buildingLayer.putTileAt(25, marker.x/32, marker.y/32)
+  buildingLayer.putTileAt(25, marker.x/32, marker.y/32+1)
 }
 
 //if bottom and up have tile
-if(bitValue == 9){
+if(bitValue == 66){
   buildingLayer.putTileAt(25, marker.x/32, marker.y/32)
 }
 
 //if bottom and right have tile
-if(bitValue == 12){
+if(bitValue == 80){
   buildingLayer.putTileAt(31, marker.x/32, marker.y/32)
 }
 
 //if bottom and left have tile
-if(bitValue == 10){
+if(bitValue == 72){
   buildingLayer.putTileAt(30, marker.x/32, marker.y/32)
 }
 
 //if up and left have tile
-if(bitValue == 3){
+if(bitValue == 10){
   buildingLayer.putTileAt(32, marker.x/32, marker.y/32)
 }
 
 //if bottom and left  and right have tile
-if(bitValue == 14){
+if(bitValue == 88){
   buildingLayer.putTileAt(27, marker.x/32, marker.y/32)
 }
 
 //if bottom and left  and Up have tile
-if(bitValue == 11){
+if(bitValue == 74){
   buildingLayer.putTileAt(39, marker.x/32, marker.y/32)
 }
 
 //if bottom and right  and Up have tile
-if(bitValue == 13){
+if(bitValue == 82){
   buildingLayer.putTileAt(40, marker.x/32, marker.y/32)
 }
 
 //if crossroads
-if(bitValue == 15){
+if(bitValue == 90){
   buildingLayer.putTileAt(26, marker.x/32, marker.y/32)
 }
 

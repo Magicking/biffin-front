@@ -105,7 +105,7 @@ create(){
     //Randomly creates Water on terrainLayer
     terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
     //Create  10x10 small testing island with mountains and forests on it
-    terrainLayer.fill (1, 9,9,12,12)
+    terrainLayer.fill (1, 5,9,32,18)
     objectLayer.fill(5, 10, 10, 10,10)
     objectLayer.fill(3, 12,13,3,5)
 
@@ -248,6 +248,8 @@ update (time, delta){
 
           };
 
+          //We use the forEachTile method in order to grap every tile's index, x and y on each corresponding layer then push it to a non-circular array 
+          // in order to stringify the object.
           console.log('Saving layers...');
 
           terrainLayer.forEachTile(terrainCallback);

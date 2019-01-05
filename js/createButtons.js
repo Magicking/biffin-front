@@ -120,7 +120,7 @@ var EditorGUI = new Phaser.Class({
            
             
             var buildingsButton = this.add.sprite(64+16,216,'buttons','buildingsButton0.png')
-                buildingsButton.on('pointerover', function(pointer) {input = 0});
+                buildingsButton.on('pointerover', function(pointer) {input = 0;currentlySelected.setFrame('buildingsButton0.png')});
                 buildingsButton.setInteractive()
             //Drop Down menu for all buildings
                 // Rectangle graphics object and backdrop
@@ -135,7 +135,7 @@ var EditorGUI = new Phaser.Class({
                 listClose.setInteractive();
 
              listClose.on('pointerdown', function(pointer){
-                    console.log('forking')
+                    console.log('Closing window...')
                     buildingsList.setVisible(false)
                 })  
 
