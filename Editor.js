@@ -33,7 +33,7 @@ var testArray
 var allowZoom
 var controlConfig
 var test
-
+var editTest
 
 class Editor extends Phaser.Scene{
   constructor() {
@@ -212,9 +212,10 @@ update (time, delta){
        brushSizeTooltip.text = brushSize;
       };
      
+     //Tester on B
       if (BKey.isDown ){
-        console.log('Bkey')
-        test = objectLayer.getTileAt(20,20)
+        console.log('Test')
+        
       }
   
        //Save on pressing S
