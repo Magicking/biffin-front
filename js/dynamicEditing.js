@@ -3,6 +3,7 @@
 function dynamicEditing(){
 //dynamic terrain editing (water becoming beach etc)
 
+//Checks for water, is used to detect if a bridge needs to be put down. Bridges should only go up or down and allways straight
  var editTerrain =  terrainLayer.getTileAt(marker.x,marker.y );
  var isThere = buildingLayer.hasTileAt(marker.x,marker.y)
 
@@ -14,10 +15,15 @@ function dynamicEditing(){
       //This removes the tile on objectLayer to make way for the road
     //  objectLayer.putTileAt(-1, marker.x, marker.y);
 
-
+//WIP: This function is called eveytime a tile is put down
 function editingCallback(tile){
+
+//This variable checks wether or not there is a tile
 var editTest2 = buildingLayer.hasTileAt (tile.x, tile.y);
+
+//if there is a tile, then it checks all cardinal directions and their diagonals and returns a boolean
 if(editTest2 == true){
+        //Bitvalue contains an integer that is the sum of the result of the boolean checks 
         var bitValue;
             editTest = buildingLayer.getTileAt(tile.x,tile.y);
 //Here we create variables that contains a boolean defining wether or not there is a tile
@@ -40,7 +46,7 @@ var downRightHasTile = buildingLayer.hasTileAt (editTest.x+1, editTest.y+1);
 //South West
 var downLeftHasTile = buildingLayer.hasTileAt (editTest.x-1, editTest.y+1);
 
-//Giving boolean values
+//Giving booleans some bit values
 
     //North
     if (onHasTile == true){
@@ -101,11 +107,14 @@ var downValue = 64;
 var downRightValue = 164;
 var onValue = 0;
 
+//Adding up all bitvalues
 bitValue = upLeftValue*upLeftHasTile+upValue*upHasTile+upRightValue*upRightHasTile+leftValue*leftHasTile+rightValue*rightHasTile+downLeftValue*downLeftHasTile+downRightValue*downRightHasTile+downValue*downHasTile+onValue*onHasTile;
 console.log(bitValue);
 
 
-//no Road 
+//these are all the possible results for the checks.
+
+//no Road, 
 if (bitValue == 0){
   buildingLayer.putTileAt(24, editTest.x, editTest.y);
 };
@@ -243,7 +252,7 @@ if (bitValue == 228){
  
 }
 //If North and South and South East have tile
-if (bitValue == 230  || bitValue == 98  ){
+if (bitValue == 230){
   buildingLayer.putTileAt(25, editTest.x, editTest.y);
 }
 //If South,East,SouthEast have tile
@@ -265,8 +274,8 @@ if (bitValue == 262){
  
 }
 //If North and South have tile
-if (bitValue == 267 || bitValue == 263 || bitValue == 261 || bitValue == 102  ){
-  buildingLayer.putTileAt(27, editTest.x, editTest.y-1)
+if (bitValue == 267  ){
+  buildingLayer.putTileAt(25, editTest.x, editTest.y)
  
 }
 if (bitValue == 282){
@@ -288,7 +297,7 @@ if (bitValue == 282){
         {
           buildingLayer.putTileAt(14, editTest.x, editTest.y);
         } */
-buildingLayer.forEachTile(editingCallback,marker.x/32,marker.y/32,2,2);
+buildingLayer.forEachTile(editingCallback,marker.x/32,marker.y/32);
 
 };
 
