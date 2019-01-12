@@ -104,12 +104,12 @@ var leftValue = 8;
 var rightValue = 16;
 var downLeftValue = 32;
 var downValue = 64;
-var downRightValue = 164;
+var downRightValue = 128;
 var onValue = 0;
 
 //Adding up all bitvalues
 bitValue = upLeftValue*upLeftHasTile+upValue*upHasTile+upRightValue*upRightHasTile+leftValue*leftHasTile+rightValue*rightHasTile+downLeftValue*downLeftHasTile+downRightValue*downRightHasTile+downValue*downHasTile+onValue*onHasTile;
-console.log(bitValue);
+//console.log(bitValue);
 
 
 //these are all the possible results for the checks.
@@ -121,34 +121,17 @@ if (bitValue == 0){
 // If above has tile
 if (bitValue == 2){
   buildingLayer.putTileAt(25, editTest.x, editTest.y);
- 
-};
-//If north and north west have a tile
-if (bitValue == 3){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
-  
-};
-//If north and NE have a tile
-if (bitValue == 6){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
- 
-};
-//If North, NE and NW have tile
-if (bitValue == 7){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
- 
 };
 // If left has tile
 if (bitValue == 8){
   buildingLayer.putTileAt(24, editTest.x, editTest.y);
 };
-//If West and NW have a tile
-if (bitValue == 9){
-  buildingLayer.putTileAt(24, editTest.x, editTest.y);
- 
-};
 //if up and left have tile
 if(bitValue == 10){
+  buildingLayer.putTileAt(32, editTest.x, editTest.y)
+};
+//if up and left have tile
+if(bitValue == 11){
   buildingLayer.putTileAt(32, editTest.x, editTest.y)
 };
 // If right has tile
@@ -158,11 +141,6 @@ if (bitValue == 16){
 //if above and right have tile
 if(bitValue == 18){
   buildingLayer.putTileAt(29, editTest.x, editTest.y)
-};
-//If East and NorthEast have a tile
-if (bitValue == 20){
-  buildingLayer.putTileAt(24, editTest.x, editTest.y);
-  
 };
 if (bitValue == 22){
   buildingLayer.putTileAt(29, editTest.x, editTest.y);
@@ -175,31 +153,23 @@ if (bitValue == 24){
 if(bitValue == 26){
   buildingLayer.putTileAt(28, editTest.x, editTest.y)
 };
-//If South and SouthWest have a tile
-if (bitValue == 40){
-  buildingLayer.putTileAt(24, editTest.x, editTest.y);
- 
+//if above and right and left have tile
+if(bitValue == 27){
+  buildingLayer.putTileAt(28, editTest.x, editTest.y)
 };
-//If West,NW and SW have a tile
-if (bitValue == 41){
-  buildingLayer.putTileAt(24, editTest.x, editTest.y);
- 
+//if above and right and left have tile
+if(bitValue == 30){
+  buildingLayer.putTileAt(28, editTest.x, editTest.y)
 };
-//if bottom have tile
-if(bitValue == 64){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y)
- 
+if(bitValue == 31){
+  buildingLayer.putTileAt(28, editTest.x, editTest.y)
+};
+//If South
+if (bitValue == 64){
+  buildingLayer.putTileAt(25, editTest.x, editTest.y);
 };
 //if bottom and up have tile
 if(bitValue == 66){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y)
-};
-//if bottom and up and northwest have tile
-if(bitValue == 67){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y)
-};
-//if bottom and up have tile
-if(bitValue == 70){
   buildingLayer.putTileAt(25, editTest.x, editTest.y)
 };
 //if bottom and left have tile
@@ -211,6 +181,10 @@ if(bitValue == 74){
   buildingLayer.putTileAt(39, editTest.x, editTest.y)
 };
 //if bottom and right have tile
+if(bitValue == 75){
+  buildingLayer.putTileAt(39, editTest.x, editTest.y)
+}
+//if bottom and right
 if(bitValue == 80){
   buildingLayer.putTileAt(31, editTest.x, editTest.y)
 }
@@ -218,69 +192,106 @@ if(bitValue == 80){
 if(bitValue == 82){
   buildingLayer.putTileAt(40, editTest.x, editTest.y)
 }
-//if bottom and left  and right have tile
+//if bottom and right  and Up have tile
 if(bitValue == 88){
   buildingLayer.putTileAt(27, editTest.x, editTest.y)
 }
+
 //if crossroads
 if(bitValue == 90){
   buildingLayer.putTileAt(26, editTest.x, editTest.y)
 }
 //If south and SE have a tile
-if (bitValue == 96){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
+if (bitValue == 91){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
  
 }
 //If South and SouthWest have a tile
-if (bitValue == 180){
-  buildingLayer.putTileAt(24, editTest.x, editTest.y);
+if (bitValue == 94){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
  
+}
+//If South and SouthWest have a tile
+if (bitValue == 95){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+ 
+}
+//If South and SouthWest have a tile
+if (bitValue == 104){
+  buildingLayer.putTileAt(30, editTest.x, editTest.y);
+}
+//If South and SouthWest have a tile
+if (bitValue == 106){
+  buildingLayer.putTileAt(39, editTest.x, editTest.y);
+}
+//If South and SouthWest have a tile
+if (bitValue == 107){
+  buildingLayer.putTileAt(39, editTest.x, editTest.y);
+}
+//If South and SouthWest have a tile
+if (bitValue == 120){
+  buildingLayer.putTileAt(27, editTest.x, editTest.y);
+}
+//If South and SouthWest have a tile
+if (bitValue == 122){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
+//If South and SouthWest have a tile
+if (bitValue == 123){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
+//If South and SouthWest have a tile
+if (bitValue == 126){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
+//If South and SouthWest have a tile
+if (bitValue == 127){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
 }
 //If East,NE and SE have a tile
-if (bitValue == 184){
-  buildingLayer.putTileAt(24, editTest.x, editTest.y);
- 
+if (bitValue == 208){
+  buildingLayer.putTileAt(31, editTest.x, editTest.y);
+}
+//If East,NE and SE have a tile
+if (bitValue == 210){
+  buildingLayer.putTileAt(40, editTest.x, editTest.y);
 }
 //If East and West have tile
-if (bitValue == 225){
-  buildingLayer.putTileAt(40, editTest.x-1, editTest.y)
- 
+if (bitValue == 214){
+  buildingLayer.putTileAt(40, editTest.x, editTest.y)
 }
 //If south and SW have a tile
-if (bitValue == 228){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
- 
+if (bitValue == 216){
+  buildingLayer.putTileAt(27, editTest.x, editTest.y);
 }
-//If North and South and South East have tile
-if (bitValue == 230){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
+if (bitValue == 218){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
 }
-//If South,East,SouthEast have tile
-if (bitValue == 244){
-  buildingLayer.putTileAt(31, editTest.x, editTest.y);
- 
+if (bitValue == 219){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
 }
-if (bitValue == 246){
-  buildingLayer.putTileAt(40, editTest.x, editTest.y);
+if (bitValue == 222){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
 }
-//If South, SE and SW have tile
-if (bitValue == 260){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
+if (bitValue == 223){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
+if (bitValue == 248){
+  buildingLayer.putTileAt(27, editTest.x, editTest.y);
+}
+if (bitValue == 250){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
+if (bitValue == 251){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
+if (bitValue == 254){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
+if (bitValue == 255){
+  buildingLayer.putTileAt(26, editTest.x, editTest.y);
+}
 
-}
-//If South, SE and SW and north have tile
-if (bitValue == 262){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y);
- 
-}
-//If North and South have tile
-if (bitValue == 267  ){
-  buildingLayer.putTileAt(25, editTest.x, editTest.y)
- 
-}
-if (bitValue == 282){
-  buildingLayer.putTileAt(40, editTest.x, editTest.y);
-};
 
 };
 
