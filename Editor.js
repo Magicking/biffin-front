@@ -50,7 +50,7 @@ preload(){
     var tileSetImage = 'terrain2'
     this.load.atlas(spriteMap, textureURL, atlasURL);
     //loads tileset reference file
-    this.load.tilemapTiledJSON('terrain2','assets/terrain2.json', null)   
+    
     //Load tileset image
     this.load.image('terrain2', 'assets/terrain2.png'); 
   }
@@ -94,6 +94,7 @@ create(){
    
     //Adding Tileset
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
+    var terrains = 
     //Create blank tilemap layers and give them render orders.
     terrainLayer = map.createBlankDynamicLayer('terrains', tiles);
     terrainLayer.depth = 0
