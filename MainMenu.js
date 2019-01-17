@@ -18,7 +18,7 @@ class MainMenu extends Phaser.Scene{
 
       this.scene.start('Editor');
       selectedLayer = 0;
-      selectedTile = 1
+      selectedTile = 0
       input = 0;
     },this)
 

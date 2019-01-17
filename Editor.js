@@ -8,6 +8,7 @@ var BKey;
 var CKey;
 var width
 var height
+var waterLayer
 var terrainLayer
 var objectLayer
 var buildingLayer
@@ -50,6 +51,8 @@ preload(){
     var tileSetImage = 'terrain2'
     this.load.atlas(spriteMap, textureURL, atlasURL);
     //loads tileset reference file
+
+   this.load.image('grass','assets/grass.png')
     
     //Load tileset image
     this.load.image('terrain2', 'assets/terrain2.png'); 
@@ -94,9 +97,11 @@ create(){
    
     //Adding Tileset
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
-    var terrains = 
+    var grass = map.addTilesetImage('grass',null ,32,32);
     //Create blank tilemap layers and give them render orders.
-    terrainLayer = map.createBlankDynamicLayer('terrains', tiles);
+    waterLayer = map.createBlankDynamicLayer('terrains', tiles),
+    waterLayer.depth = -1
+    terrainLayer = map.createBlankDynamicLayer('grass', grass);
     terrainLayer.depth = 0
     objectLayer = map.createBlankDynamicLayer('objects', tiles);
     objectLayer.depth = 1
@@ -104,9 +109,9 @@ create(){
     buildingLayer.depth = 2
     selectedLayer = 1
     //Randomly creates Water on terrainLayer
-    terrainLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
+    waterLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
     //Create  10x10 small testing island with mountains and forests on it
-    terrainLayer.fill (1, 5,9,32,18)
+    terrainLayer.fill (0, 5,9,32,18)
     objectLayer.fill(5, 10, 10, 10,10)
     objectLayer.fill(3, 12,13,3,5)
 
@@ -174,7 +179,7 @@ update (time, delta){
       if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
       {
        selectedTile= -1   // Erases tiles on all layers and places water on terrain
-      terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
+      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       }

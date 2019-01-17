@@ -100,7 +100,7 @@ var EditorGUI = new Phaser.Class({
                 grassButton.setInteractive()
                 grassButton.on('pointerdown', function(pointer){
                     currentlySelected.setFrame('grassbutton0.png')
-                    selectedTile = 1
+                    selectedTile = 0
                     selectedLayer = 1
                 })    
         //Road
@@ -118,7 +118,7 @@ var EditorGUI = new Phaser.Class({
                 }) 
         //Buildings
            
-            
+            //This button triggers the appearance of a building selection window, which is a container containing selectable building sprites
             var buildingsButton = this.add.sprite(64+16,216,'buttons','buildingsButton0.png')
                 buildingsButton.on('pointerover', function(pointer) {input = 0;currentlySelected.setFrame('buildingsButton0.png')});
                 buildingsButton.setInteractive()
