@@ -17,6 +17,7 @@ class MainMenu extends Phaser.Scene{
       this.scene.stop('MainMenu')
 
       this.scene.start('Editor');
+      //chooses a layer and a tile to start with, in this case, terrainLayer and grass.
       selectedLayer = 0;
       selectedTile = 0
       input = 0;

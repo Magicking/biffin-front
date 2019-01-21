@@ -60,6 +60,9 @@ preload(){
  
 // CREATE<=======================================================================================================================
 create(){
+
+
+  
     allowZoom = true
     //Determines wether or not brush can write on map
     input = 1
@@ -110,6 +113,7 @@ create(){
     selectedLayer = 1
     //Randomly creates Water on terrainLayer
     waterLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
+
     //Create  10x10 small testing island with mountains and forests on it
     terrainLayer.fill (0, 5,9,32,18)
     objectLayer.fill(5, 10, 10, 10,10)

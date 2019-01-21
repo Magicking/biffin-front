@@ -21,6 +21,11 @@ var EditorGUI = new Phaser.Class({
 
     create: function ()
     {   
+        /*
+         var aGrid = new AlignGrid({scene:this, rows:11,cols:11})
+         aGrid.showNumbers()*/
+
+         
         //Create tooltip
             var dragMe = this.make.text({
             x: 16,

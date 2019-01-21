@@ -1,0 +1,5 @@
+- make game device responsive and scalable:
+	- implement grid with 11 rows and columns
+
+BUGS: 
+- Strange behaviour with how sometimes dynamic editing functions and other times not depending on where it’s located. Left of screen does not register.
