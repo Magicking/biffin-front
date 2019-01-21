@@ -15,16 +15,83 @@ var EditorGUI = new Phaser.Class({
 
     preload: function ()
     {
+         this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'js/rexuiplugin.min.js',
+            sceneKey: 'EditorGUI'
+        });      
        this.load.atlas('buttons', 'assets/buttons.png', 'assets/buttons.json');
        this.load.atlas('menuButtons', 'assets/menuButtons.png', 'assets/menuButtons.json');
     },
 
     create: function ()
     {   
-        /*
-         var aGrid = new AlignGrid({scene:this, rows:11,cols:11})
-         aGrid.showNumbers()*/
+        var tabs = this.rexUI.add.tabs({
+                x: 400,
+                y: 300,
 
+                panel: this.rexUI.add.gridTable({
+                    background: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_PRIMARY),
+
+                    table: {
+                        width: 250,
+                        height: 400,
+
+                        cellWidth: 120,
+                        cellHeight: 60,
+                        columns: 2,
+                    },
+
+                    slider: {
+                        track: this.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_DARK),
+                        thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 13, COLOR_LIGHT),
+                    },
+
+                    createCellContainerCallback: function (cell) {
+                        var scene = cell.scene,
+                            width = cell.width,
+                            height = cell.height,
+                            item = cell.item,
+                            index = cell.index;
+                        return scene.rexUI.add.label({
+                                width: width,
+                                height: height,
+
+                                background: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 0).setStrokeStyle(2, COLOR_DARK),
+                                icon: scene.rexUI.add.roundRectangle(0, 0, 20, 20, 10, item.color),
+                                text: scene.add.text(0, 0, item.id),
+
+                                space: {
+                                    icon: 10,
+                                    left: 15
+                                }
+                            })
+                            .setOrigin(0)
+                            .layout();
+                    },
+                }),
+
+                leftButtons: [
+                    createButton(this, 2, 'AA'),
+                    createButton(this, 2, 'BB'),
+                    createButton(this, 2, 'CC'),
+                    createButton(this, 2, 'DD'),
+                ],
+
+                rightButtons: [
+                    createButton(this, 0, '+'),
+                    createButton(this, 0, '-'),
+                ],
+
+                space: {
+                    leftButtonsOffset: 20,
+                    rightButtonsOffset: 30,
+
+                    leftButton: 1,
+                },
+            })
+            .layout()
+    
          
         //Create tooltip
             var dragMe = this.make.text({
