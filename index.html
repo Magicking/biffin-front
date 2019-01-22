@@ -12,7 +12,6 @@
 	<script src="js/createButtons.js"></script>
 	<script src="js/dynamicEditing.js"></script>
 	<script src="js/rexplugins.min.js"></script>
-
 	
 	
     <style>
@@ -25,20 +24,25 @@
 <body>
 
 <script type="text/javascript">
+
 		var width = window.innerWidth
 		var height = window.innerHeight
-
+		import UIPlugin from 'rexTemplates/ui/ui-plugin.js';
+		
 		var config = {
         type: Phaser.AUTO,
         antialias: false,
         autoResize : true,
         width: width,
         height: height,
-    	scene:[{key:'MainMenu',
-    			plugin:''},Editor,EditorGUI] 
-
-    	};
-
+    	scene:[MainMenu,Editor,EditorGUI], 
+    	plugins: {
+    	 scene: [{
+            key: 'rexUI',
+            plugin: UIPlugin,
+            mapping: 'rexUI'
+        }]
+  		}};
 
 	var game = new Phaser.Game(config);
 
