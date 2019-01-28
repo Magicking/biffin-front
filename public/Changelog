@@ -1,0 +1,17 @@
+Changelog 
+
+
+
+Biffin v0.02 25/11/2016 - Includes all previous changes
+	Imported project embryo to states format
+	Added States boot, preloader, menu, editor
+	Reorganised server file structure and created changelog
+
+	Menu - Added menu state and editor button, responsive
+	Editor - Added grass, road, water, forest, eraser, brush, river 
+	Editor - Added game scaling on window resize
+	Editor - Added Debug text
+	Editor - Created stageGroup, contains all game layers exept GUI; to handle all resizing.
+	Editor - Added road and buildings layer named "terrainCons"
+	Editor - Added bitmasking detection for road dynamic editing
+	Editor - Added first Implementation of zoom but laggy as fuck
