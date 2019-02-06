@@ -1,3 +1,6 @@
+mdp routeur wifi 63240406
+
+
 Scaling:
 - make game device responsive and scalable:
 	- implement grid with 11 rows and columns

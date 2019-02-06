@@ -12,8 +12,7 @@ var waterLayer
 var terrainLayer
 var objectLayer
 var buildingLayer
-var waterLayer
-var selectedTile
+var selectedTile = 1
 var zoomFactory = 1
 var GKey
 var HKey
@@ -54,15 +53,11 @@ preload(){
     var textureURL = 'assets/main.png'
     var atlasURL = 'assets/main.json'
     var tileSetImage = 'terrain2'
-    var grassSet = 'grass'
     this.load.atlas(spriteMap, textureURL, atlasURL);
     //loads tileset reference file
 
    this.load.image('grass','assets/grass.png')
     
-    //loads grass and corner grass tiles
-    this.load.image('grass', 'assets/grass.png'); 
-
     //Load tileset image
     this.load.image('terrain2', 'assets/terrain2.png'); 
   }
@@ -116,10 +111,10 @@ create(){
     terrainLayer = map.createBlankDynamicLayer('grass', grass);
     terrainLayer.depth = 0
     objectLayer = map.createBlankDynamicLayer('objects', tiles);
-    objectLayer.depth = 2
+    objectLayer.depth = 1
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
-    buildingLayer.depth = 3
-    selectedLayer = 0
+    buildingLayer.depth = 2
+    selectedLayer = 1
     //Randomly creates Water on terrainLayer
     waterLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
 
@@ -149,7 +144,6 @@ create(){
     //Black and 2 px wide
     marker.lineStyle(2, 0x000000, 1);
     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
-    marker.depth = 4
       
     //Set camera bounds to mapsize
     mainCam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
