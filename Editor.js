@@ -53,13 +53,14 @@ preload(){
     var textureURL = 'assets/main.png'
     var atlasURL = 'assets/main.json'
     var tileSetImage = 'terrain2'
-    this.load.atlas(spriteMap, textureURL, atlasURL);
+    
     //loads tileset reference file
 
    this.load.image('grass','assets/grass.png')
     
     //Load tileset image
     this.load.image('terrain2', 'assets/terrain2.png'); 
+    this.load.image('mountains','assets/mountains.png')
   }
  
 // CREATE<=======================================================================================================================
@@ -103,8 +104,11 @@ create(){
 
    
     //Adding Tileset
+
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
     var grass = map.addTilesetImage('grass',null ,32,32);
+    var mountains = map.addTilesetImage('mountains',null,32,48)
+    
     //Create blank tilemap layers and give them render orders.
     waterLayer = map.createBlankDynamicLayer('terrains', tiles),
     waterLayer.depth = -1
@@ -144,6 +148,7 @@ create(){
     //Black and 2 px wide
     marker.lineStyle(2, 0x000000, 1);
     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
+    marker.setAlpha(0.4)
       
     //Set camera bounds to mapsize
     mainCam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -165,7 +170,7 @@ update (time, delta){
 
       //Test to see both extremities
       culled = mainCam.cull(testArray)
-      if(culled.length ==2){
+      if(culled.length == 2 ){
         console.log('seeing both extremities')
         mainCam.inputEnabled = false          //Find way to disable zooming out here
       }
@@ -213,8 +218,11 @@ update (time, delta){
 
       //Brush marker size management
       if (GKey.isDown ) {
+      //Decrements by 1
        brushSize--;
+      //Clear previous marker
        marker.clear();
+      //redraw marker
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight); //Bug with how we set the rectangle widths.
        brushSizeTooltip.text = brushSize;
       };
@@ -234,7 +242,7 @@ update (time, delta){
   
        //Save on pressing S
        if (SKey.isDown){
-          //This is our map's save object, it will contain all layers and arrays containing the tiles.
+          //This is our map's save object, it will contain all layers as objects that contain arrays containing tiles.
               mapSave = {terrainLayer:[],
                          objectLayer:[],
                          buildingLayer:[],
@@ -263,8 +271,8 @@ update (time, delta){
 
           };
 
-          //We use the forEachTile method in order to grap every tile's index, x and y on each corresponding layer then push it to a non-circular array 
-          // in order to stringify the object.
+          //We use the forEachTile method in order to grab every tile's index, x and y on each corresponding layer then push it to a non-circular array 
+          //in order to be able to stringify the object.
           console.log('Saving layers...');
 
           terrainLayer.forEachTile(terrainCallback);

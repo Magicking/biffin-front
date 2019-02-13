@@ -1,4 +1,4 @@
-mdp routeur wifi 63240406
+
 
 
 Scaling:
@@ -7,14 +7,15 @@ Scaling:
 	- place scaling in game config
 
 Sprites:
-- make 32x48 sprites for mountains
+- DONE: make 32x48 sprites for mountains
 - depth layer the tiles for nicer rendering
 - Overhaul all army sprites to 32x48 sprites
 
 UI:
  -Test rexUi plugins
 BUGS: 
-- Strange behaviour with how sometimes dynamic editing functions and other times not depending on where it’s located. Left of screen does not register.
+- FIXED: Strange behaviour with how sometimes dynamic editing functions and other times not depending on where it’s located. Left of screen does not register.
+	Fixed by removing the console.log which was too expensive an operation and having it run all the time if grass is selected.
 
 
 DEFINE: 

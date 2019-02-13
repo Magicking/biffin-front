@@ -33,7 +33,8 @@ if(isThereATile == true){
 
 //Bitvalue contains an integer that is the sum of the result of the boolean checks 
 var bitValue;
-            interestingTile = buildingLayer.getTileAt(tile.x,tile.y);
+
+interestingTile = buildingLayer.getTileAt(tile.x,tile.y);
 //Here we create variables that contains a boolean defining wether or not there is a tile
 // Tile itself
 var onHasTile = buildingLayer.hasTileAt (interestingTile.x, interestingTile.y);
@@ -326,7 +327,7 @@ buildingLayer.forEachTile(roadEditing,marker.x/32,marker.y/32);
 
 
 // grass Dynamic detection, checks if selectedTile is grass
- if (selectedTile == 0 && this.input.mousePointer.isDown && input == 1 ) {
+ if (selectedTile == 0  && input == 1 ) {
       //8bit Bitmasking
        
 //This part of the function is used for dynamic editing of grass boundaries when compared to water
@@ -627,7 +628,7 @@ if (bitValue == 255){
           terrainLayer.putTileAt(14, interestingTile.x, interestingTile.y);
         } */
 terrainLayer.forEachTile(grassEditing
-,marker.x/32,marker.y/32);
+);
 
 };
 
