@@ -7,7 +7,7 @@ function dynamicEditing(){
  var editTerrain =  terrainLayer.getTileAt(marker.x,marker.y );
  
 // Road Dynamic detection, checks if selectedTile is road
- if (selectedTile == 24 && this.input.mousePointer.isDown && input == 1 ) {
+ if (selectedTile == 0 && this.input.mousePointer.isDown && input == 1 ) {
       //8bit Bitmasking
        
 
@@ -26,7 +26,7 @@ function dynamicEditing(){
 function roadEditing(tile){
 
 //This variable checks wether or not there is a tile
-var isThereATile = buildingLayer.hasTileAt (tile.x, tile.y);
+var isThereATile = roadLayer.hasTileAt (tile.x, tile.y);
 
 //if there is a tile, then it checks all cardinal directions and their diagonals and returns a boolean
 if(isThereATile == true){
@@ -34,26 +34,26 @@ if(isThereATile == true){
 //Bitvalue contains an integer that is the sum of the result of the boolean checks 
 var bitValue;
 
-interestingTile = buildingLayer.getTileAt(tile.x,tile.y);
+interestingTile = roadLayer.getTileAt(tile.x,tile.y);
 //Here we create variables that contains a boolean defining wether or not there is a tile
 // Tile itself
-var onHasTile = buildingLayer.hasTileAt (interestingTile.x, interestingTile.y);
+var onHasTile = roadLayer.hasTileAt (interestingTile.x, interestingTile.y);
 //North Tile
-var upHasTile = buildingLayer.hasTileAt (interestingTile.x, interestingTile.y-1);
+var upHasTile = roadLayer.hasTileAt (interestingTile.x, interestingTile.y-1);
 //North East
-var upRightHasTile = buildingLayer.hasTileAt (interestingTile.x+1, interestingTile.y-1);
+var upRightHasTile = roadLayer.hasTileAt (interestingTile.x+1, interestingTile.y-1);
 //North West
-var upLeftHasTile = buildingLayer.hasTileAt (interestingTile.x-1, interestingTile.y-1);
+var upLeftHasTile = roadLayer.hasTileAt (interestingTile.x-1, interestingTile.y-1);
 //East
-var rightHasTile = buildingLayer.hasTileAt (interestingTile.x+1, interestingTile.y);
+var rightHasTile = roadLayer.hasTileAt (interestingTile.x+1, interestingTile.y);
 //West
-var leftHasTile = buildingLayer.hasTileAt (interestingTile.x-1, interestingTile.y);
+var leftHasTile = roadLayer.hasTileAt (interestingTile.x-1, interestingTile.y);
 //South
-var downHasTile = buildingLayer.hasTileAt (interestingTile.x, interestingTile.y+1);
+var downHasTile = roadLayer.hasTileAt (interestingTile.x, interestingTile.y+1);
 //South East
-var downRightHasTile = buildingLayer.hasTileAt (interestingTile.x+1, interestingTile.y+1);
+var downRightHasTile = roadLayer.hasTileAt (interestingTile.x+1, interestingTile.y+1);
 //South West
-var downLeftHasTile = buildingLayer.hasTileAt (interestingTile.x-1, interestingTile.y+1);
+var downLeftHasTile = roadLayer.hasTileAt (interestingTile.x-1, interestingTile.y+1);
 
 //Giving booleans some bit values
 
@@ -125,184 +125,184 @@ bitValue = upLeftValue*upLeftHasTile+upValue*upHasTile+upRightValue*upRightHasTi
 
 //no Road, 
 if (bitValue == 0){
-  buildingLayer.putTileAt(24, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(0, interestingTile.x, interestingTile.y);
 };
 // If above has tile
 if (bitValue == 2){
-  buildingLayer.putTileAt(25, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(1, interestingTile.x, interestingTile.y);
 };
 // If left has tile
 if (bitValue == 8){
-  buildingLayer.putTileAt(24, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(0, interestingTile.x, interestingTile.y);
 };
 //if up and left have tile
 if(bitValue == 10){
-  buildingLayer.putTileAt(32, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(8, interestingTile.x, interestingTile.y)
 };
 //if up and left have tile
 if(bitValue == 11){
-  buildingLayer.putTileAt(32, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(8, interestingTile.x, interestingTile.y)
 };
 // If right has tile
 if (bitValue == 16){
-  buildingLayer.putTileAt(24, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(0, interestingTile.x, interestingTile.y);
 };
 //if above and right have tile
 if(bitValue == 18){
-  buildingLayer.putTileAt(29, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(5, interestingTile.x, interestingTile.y)
 };
 if (bitValue == 22){
-  buildingLayer.putTileAt(29, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(5, interestingTile.x, interestingTile.y);
 };
 // If left and right has tile
 if (bitValue == 24){
-  buildingLayer.putTileAt(24, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(0, interestingTile.x, interestingTile.y);
 };
 //if above and right and left have tile
 if(bitValue == 26){
-  buildingLayer.putTileAt(28, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(4, interestingTile.x, interestingTile.y)
 };
 //if above and right and left have tile
 if(bitValue == 27){
-  buildingLayer.putTileAt(28, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(4, interestingTile.x, interestingTile.y)
 };
 //if above and right and left have tile
 if(bitValue == 30){
-  buildingLayer.putTileAt(28, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(4, interestingTile.x, interestingTile.y)
 };
 if(bitValue == 31){
-  buildingLayer.putTileAt(28, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(4, interestingTile.x, interestingTile.y)
 };
 //If South
 if (bitValue == 64){
-  buildingLayer.putTileAt(25, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(1, interestingTile.x, interestingTile.y);
 };
 //if bottom and up have tile
 if(bitValue == 66){
-  buildingLayer.putTileAt(25, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(1, interestingTile.x, interestingTile.y)
 };
 //if bottom and left have tile
 if(bitValue == 72){
-  buildingLayer.putTileAt(30, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(6, interestingTile.x, interestingTile.y);
 };
 //if bottom and left  and Up have tile
 if(bitValue == 74){
-  buildingLayer.putTileAt(39, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(9, interestingTile.x, interestingTile.y)
 };
 //if bottom and right have tile
 if(bitValue == 75){
-  buildingLayer.putTileAt(39, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(9, interestingTile.x, interestingTile.y)
 }
 //if bottom and right
 if(bitValue == 80){
-  buildingLayer.putTileAt(31, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(7, interestingTile.x, interestingTile.y)
 }
 //if bottom and right  and Up have tile
 if(bitValue == 82){
-  buildingLayer.putTileAt(40, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(10, interestingTile.x, interestingTile.y)
 }
 //if bottom and right  and Up have tile
 if(bitValue == 86){
-  buildingLayer.putTileAt(40, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(10, interestingTile.x, interestingTile.y)
 }
 //if bottom and right  and Up have tile
 if(bitValue == 88){
-  buildingLayer.putTileAt(27, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(3, interestingTile.x, interestingTile.y)
 }
 
 //if crossroads
 if(bitValue == 90){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y)
 }
 //If south and SE have a tile
 if (bitValue == 91){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
  
 }
 //If South and SouthWest have a tile
 if (bitValue == 94){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
  
 }
 //If South and SouthWest have a tile
 if (bitValue == 95){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
  
 }
 //If South and SouthWest have a tile
 if (bitValue == 104){
-  buildingLayer.putTileAt(30, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(6, interestingTile.x, interestingTile.y);
 }
 //If South and SouthWest have a tile
 if (bitValue == 106){
-  buildingLayer.putTileAt(39, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(9, interestingTile.x, interestingTile.y);
 }
 //If South and SouthWest have a tile
 if (bitValue == 107){
-  buildingLayer.putTileAt(39, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(9, interestingTile.x, interestingTile.y);
 }
 //If South and SouthWest have a tile
 if (bitValue == 120){
-  buildingLayer.putTileAt(27, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(3, interestingTile.x, interestingTile.y);
 }
 //If South and SouthWest have a tile
 if (bitValue == 122){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 //If South and SouthWest have a tile
 if (bitValue == 123){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 //If South and SouthWest have a tile
 if (bitValue == 126){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 //If South and SouthWest have a tile
 if (bitValue == 127){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 //If East,NE and SE have a tile
 if (bitValue == 208){
-  buildingLayer.putTileAt(31, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(7, interestingTile.x, interestingTile.y);
 }
 //If East,NE and SE have a tile
 if (bitValue == 210){
-  buildingLayer.putTileAt(40, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(10, interestingTile.x, interestingTile.y);
 }
 //If East and West have tile
 if (bitValue == 214){
-  buildingLayer.putTileAt(40, interestingTile.x, interestingTile.y)
+  roadLayer.putTileAt(10, interestingTile.x, interestingTile.y)
 }
 //If south and SW have a tile
 if (bitValue == 216){
-  buildingLayer.putTileAt(27, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(3, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 218){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 219){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 222){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 223){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 248){
-  buildingLayer.putTileAt(27, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(3, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 250){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 251){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 254){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 if (bitValue == 255){
-  buildingLayer.putTileAt(26, interestingTile.x, interestingTile.y);
+  roadLayer.putTileAt(2, interestingTile.x, interestingTile.y);
 }
 
 

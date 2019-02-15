@@ -111,8 +111,8 @@ var EditorGUI = new Phaser.Class({
                 roadButton.setInteractive()
                 roadButton.on('pointerdown', function(pointer){
                     currentlySelected.setFrame('roadbutton0.png')
-                    selectedTile = 24;
-                    selectedLayer = 3;
+                    selectedTile = 0;
+                    selectedLayer = 4;
                     brushSize = 1
                     marker.clear();
                     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);

@@ -11,6 +11,7 @@ var height
 var waterLayer
 var terrainLayer
 var objectLayer
+var roadLayer
 var buildingLayer
 var selectedTile = 1
 var zoomFactory = 1
@@ -60,7 +61,9 @@ preload(){
     
     //Load tileset image
     this.load.image('terrain2', 'assets/terrain2.png'); 
-    this.load.image('mountains','assets/mountains.png')
+    this.load.image('objects','assets/objects.png');
+    this.load.image('roads','assets/roads.png')
+
   }
  
 // CREATE<=======================================================================================================================
@@ -107,15 +110,19 @@ create(){
 
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
     var grass = map.addTilesetImage('grass',null ,32,32);
-    var mountains = map.addTilesetImage('mountains',null,32,48)
+    var objects = map.addTilesetImage('objects',null,32,48)
+    var roads = map.addTilesetImage('roads',null,32,32)
+
     
     //Create blank tilemap layers and give them render orders.
     waterLayer = map.createBlankDynamicLayer('terrains', tiles),
     waterLayer.depth = -1
     terrainLayer = map.createBlankDynamicLayer('grass', grass);
     terrainLayer.depth = 0
-    objectLayer = map.createBlankDynamicLayer('objects', tiles);
+    objectLayer = map.createBlankDynamicLayer('objects', [grass, objects],0, 0, undefined, undefined, map.tileWidth, map.tileHeight);
     objectLayer.depth = 1
+    roadLayer = map.createBlankDynamicLayer('roads', roads);
+    roadLayer.depth = 1
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
     buildingLayer.depth = 2
     selectedLayer = 1
@@ -124,7 +131,7 @@ create(){
 
     //Create  10x10 small testing island with mountains and forests on it
     terrainLayer.fill (0, 5,9,32,18)
-    objectLayer.fill(5, 10, 10, 10,10)
+    objectLayer.fill(grass.firstgid+3, 10, 10, 10,10)
     objectLayer.fill(3, 12,13,3,5)
 
     //get top left and bottom right tiles and check if both are visible, 
@@ -155,6 +162,9 @@ create(){
  
     //Create GUI scene
     createButtons.call(this); 
+
+    //We call dynamic editing once on create to make sure all borders are correctly set
+    dynamicEditing.call(this);
   
     //Create Key for testing
     BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
@@ -200,12 +210,18 @@ update (time, delta){
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
           // Fill the tiles within the terrain Layer with selectedTile 
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
       };
 
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with selectedTile 
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
 
+      };
+       if (this.input.manager.activePointer.isDown && selectedLayer==4){
+          // Fill the tiles within the object Layer with selectedTile 
+      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
       };
 
        if (this.input.manager.activePointer.isDown && selectedLayer==3){
@@ -214,7 +230,7 @@ update (time, delta){
       };
       }
 
-      dynamicEditing.call(this)
+      
 
       //Brush marker size management
       if (GKey.isDown ) {
