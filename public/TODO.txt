@@ -1,17 +1,28 @@
+
+
+
 Scaling:
 - make game device responsive and scalable:
-	- implement grid with 11 rows and columns
+	- implement grid with rows and columns
 	- place scaling in game config
 
 Sprites:
-- make 32x48 sprites for mountains
-- depth layer the tiles for nicer rendering
-- Overhaul all army sprites to 32x48 sprites
+- DONE make 32x64 sprites for mountains 
+- depth layer the tiles for nicer rendering: 
+- Overhaul all army sprites to 32x64 sprites
+- add bridges to roads.png
+- have road remove tiles on objectLayer when a tile is put down. (if a road is put down on a mountain, clear the road.)
+
 
 UI:
- -Test rexUi plugins
+- enable resizing of the window.
+-Test rexUi plugins - CANCELLED
+
 BUGS: 
-- Strange behaviour with how sometimes dynamic editing functions and other times not depending on where it’s located. Left of screen does not register.
+-   FIXED: Strange behaviour with how sometimes dynamic editing functions and other times not depending on where it’s located. Left of screen does not register.
+	-Fixed by removing the marker.x, and marker.y from the callback on tiles and having dynamic editing only be called when a tile is put down.
+	
+- Error in one of the bitmasking values for one of grass findings.
 
 
 DEFINE: 

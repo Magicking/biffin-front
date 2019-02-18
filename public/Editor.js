@@ -11,9 +11,9 @@ var height
 var waterLayer
 var terrainLayer
 var objectLayer
+var roadLayer
 var buildingLayer
-var waterLayer
-var selectedTile
+var selectedTile = 1
 var zoomFactory = 1
 var GKey
 var HKey
@@ -54,17 +54,16 @@ preload(){
     var textureURL = 'assets/main.png'
     var atlasURL = 'assets/main.json'
     var tileSetImage = 'terrain2'
-    var grassSet = 'grass'
-    this.load.atlas(spriteMap, textureURL, atlasURL);
+    
     //loads tileset reference file
 
    this.load.image('grass','assets/grass.png')
     
-    //loads grass and corner grass tiles
-    this.load.image('grass', 'assets/grass.png'); 
-
     //Load tileset image
     this.load.image('terrain2', 'assets/terrain2.png'); 
+    this.load.image('objects','assets/objects.png');
+    this.load.image('roads','assets/roads.png')
+
   }
  
 // CREATE<=======================================================================================================================
@@ -108,25 +107,32 @@ create(){
 
    
     //Adding Tileset
+
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
-    var grass = map.addTilesetImage('grass',null ,32,32);
+    var grass = map.addTilesetImage('grass', null , 32, 32);
+    var objects = map.addTilesetImage('objects', null, 32, 64,);
+    var roads = map.addTilesetImage('roads', null, 32, 32);
+
+    
     //Create blank tilemap layers and give them render orders.
-    waterLayer = map.createBlankDynamicLayer('terrains', tiles),
+    waterLayer = map.createBlankDynamicLayer('terrains', tiles);
     waterLayer.depth = -1
     terrainLayer = map.createBlankDynamicLayer('grass', grass);
     terrainLayer.depth = 0
-    objectLayer = map.createBlankDynamicLayer('objects', tiles);
-    objectLayer.depth = 2
+    objectLayer = map.createBlankDynamicLayer('objects', objects);
+    objectLayer.depth = 1
+    roadLayer = map.createBlankDynamicLayer('roads', roads);
+    roadLayer.depth = 1
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
-    buildingLayer.depth = 3
-    selectedLayer = 0
+    buildingLayer.depth = 2
+    selectedLayer = 1
     //Randomly creates Water on terrainLayer
     waterLayer.randomize(0, 0, map.width, map.height, [0 /*add tile index here to add to rng distribution*/]);
 
     //Create  10x10 small testing island with mountains and forests on it
-    terrainLayer.fill (0, 5,9,32,18)
-    objectLayer.fill(5, 10, 10, 10,10)
-    objectLayer.fill(3, 12,13,3,5)
+    terrainLayer.fill (1, 5,9,32,18)
+    objectLayer.fill(0, 10, 10, 10,10)
+    objectLayer.fill(1, 12, 13, 3, 5)
 
     //get top left and bottom right tiles and check if both are visible, 
     //if both are visible, do not allow zoom.
@@ -146,16 +152,19 @@ create(){
     // Create Paintbrush marker
     marker = this.add.graphics();
     brushSize = 6
-    //Black and 2 px wide
+    //Black and 2 px wide and 60% transparent
     marker.lineStyle(2, 0x000000, 1);
     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
-    marker.depth = 4
+    marker.setAlpha(0.4)
       
     //Set camera bounds to mapsize
     mainCam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
  
     //Create GUI scene
     createButtons.call(this); 
+
+    //We call dynamic editing once on create to make sure all borders are correctly set
+    dynamicEditing.call(this);
   
     //Create Key for testing
     BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
@@ -163,7 +172,7 @@ create(){
     GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
     HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
     SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-
+  this.scale.on('resize', resize, this);
 }//End of Create
  
 //UPDATE <=======================================================================================================================
@@ -171,7 +180,7 @@ update (time, delta){
 
       //Test to see both extremities
       culled = mainCam.cull(testArray)
-      if(culled.length ==2){
+      if(culled.length == 2 ){
         console.log('seeing both extremities')
         mainCam.inputEnabled = false          //Find way to disable zooming out here
       }
@@ -196,17 +205,24 @@ update (time, delta){
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
       }
       
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
           // Fill the tiles within the terrain Layer with selectedTile 
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
       };
 
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with selectedTile 
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
 
+      };
+       if (this.input.manager.activePointer.isDown && selectedLayer==4){
+          // Fill the tiles within the object Layer with selectedTile 
+      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
       };
 
        if (this.input.manager.activePointer.isDown && selectedLayer==3){
@@ -215,12 +231,13 @@ update (time, delta){
       };
       }
 
-      dynamicEditing.call(this)
-
       //Brush marker size management
       if (GKey.isDown ) {
+      //Decrements by 1
        brushSize--;
+      //Clear previous marker
        marker.clear();
+      //redraw marker
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight); //Bug with how we set the rectangle widths.
        brushSizeTooltip.text = brushSize;
       };
@@ -240,7 +257,7 @@ update (time, delta){
   
        //Save on pressing S
        if (SKey.isDown){
-          //This is our map's save object, it will contain all layers and arrays containing the tiles.
+          //This is our map's save object, it will contain all layers as objects that contain arrays containing tiles.
               mapSave = {terrainLayer:[],
                          objectLayer:[],
                          buildingLayer:[],
@@ -269,8 +286,8 @@ update (time, delta){
 
           };
 
-          //We use the forEachTile method in order to grap every tile's index, x and y on each corresponding layer then push it to a non-circular array 
-          // in order to stringify the object.
+          //We use the forEachTile method in order to grab every tile's index, x and y on each corresponding layer then push it to a non-circular array 
+          //in order to be able to stringify the object.
           console.log('Saving layers...');
 
           terrainLayer.forEachTile(terrainCallback);
@@ -283,7 +300,14 @@ update (time, delta){
             };
 
            }
- 
 
+ resize (gameSize, baseSize, displaySize, resolution)
+{
+    var width = gameSize.width;
+    var height = gameSize.height;
+
+    this.cameras.resize(width, height);
+
+}
 }
 

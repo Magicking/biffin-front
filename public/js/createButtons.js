@@ -69,7 +69,7 @@ var EditorGUI = new Phaser.Class({
                 forestButton.on('pointerover', function(pointer) {input = 0});
                 forestButton.on('pointerdown', function(pointer){
                     currentlySelected.setFrame('forestbutton0.png')
-                    selectedTile = 3
+                    selectedTile = 1
                     selectedLayer = 2
                 })
         //Mountain
@@ -78,7 +78,7 @@ var EditorGUI = new Phaser.Class({
                 mountainButton.setInteractive()
                 mountainButton.on('pointerdown', function(pointer){
                     currentlySelected.setFrame('mountainbutton0.png')
-                    selectedTile = 5
+                    selectedTile = 0
                     selectedLayer = 2
                 })
         //River
@@ -111,8 +111,8 @@ var EditorGUI = new Phaser.Class({
                 roadButton.setInteractive()
                 roadButton.on('pointerdown', function(pointer){
                     currentlySelected.setFrame('roadbutton0.png')
-                    selectedTile = 24;
-                    selectedLayer = 3;
+                    selectedTile = 0;
+                    selectedLayer = 4;
                     brushSize = 1
                     marker.clear();
                     marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);

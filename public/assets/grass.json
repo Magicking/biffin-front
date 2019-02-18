@@ -4,13 +4,34 @@
 			"image": "grass.png",
 			"format": "RGBA8888",
 			"size": {
-				"w": 1536,
+				"w": 1472,
 				"h": 32
 			},
 			"scale": 1,
 			"frames": [
 				{
 					"filename": "0.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
+					"filename": "46.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -703,6 +724,27 @@
 					}
 				},
 				{
+					"filename": "39.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 32,
+						"h": 32
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					},
+					"frame": {
+						"x": 1024,
+						"y": 0,
+						"w": 32,
+						"h": 32
+					}
+				},
+				{
 					"filename": "33.png",
 					"rotated": false,
 					"trimmed": false,
@@ -829,7 +871,7 @@
 					}
 				},
 				{
-					"filename": "39.png",
+					"filename": "40.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -850,7 +892,7 @@
 					}
 				},
 				{
-					"filename": "40.png",
+					"filename": "41.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -871,7 +913,7 @@
 					}
 				},
 				{
-					"filename": "41.png",
+					"filename": "42.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -892,7 +934,7 @@
 					}
 				},
 				{
-					"filename": "42.png",
+					"filename": "43.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -913,7 +955,7 @@
 					}
 				},
 				{
-					"filename": "43.png",
+					"filename": "44.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -934,7 +976,7 @@
 					}
 				},
 				{
-					"filename": "44.png",
+					"filename": "45.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -955,7 +997,7 @@
 					}
 				},
 				{
-					"filename": "45.png",
+					"filename": "47.png",
 					"rotated": false,
 					"trimmed": false,
 					"sourceSize": {
@@ -974,48 +1016,6 @@
 						"w": 32,
 						"h": 32
 					}
-				},
-				{
-					"filename": "46.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 1472,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					}
-				},
-				{
-					"filename": "47.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 32,
-						"h": 32
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					},
-					"frame": {
-						"x": 1504,
-						"y": 0,
-						"w": 32,
-						"h": 32
-					}
 				}
 			]
 		}
@@ -1023,6 +1023,6 @@
 	"meta": {
 		"app": "https://www.codeandweb.com/texturepacker",
 		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:1241f1ecc01fea6e0437217726b21dfc:5c5ae4dd4bcb245a35c6950c6b56b5e9:b5eff027e4675af447e0c9c1b13dff5b$"
+		"smartupdate": "$TexturePacker:SmartUpdate:c7ccb0b93a81fac79f7758b959783884:5c5ae4dd4bcb245a35c6950c6b56b5e9:b5eff027e4675af447e0c9c1b13dff5b$"
 	}
 }
