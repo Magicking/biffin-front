@@ -8,10 +8,12 @@ Scaling:
 
 Sprites:
 - DONE make 32x64 sprites for mountains 
+	-Reduce the mountain's width a little
 - depth layer the tiles for nicer rendering: 
 - Overhaul all army sprites to 32x64 sprites
 - add bridges to roads.png
 - have road remove tiles on objectLayer when a tile is put down. (if a road is put down on a mountain, clear the road.)
+- have forests and mountains place grass under themselves when placed
 
 
 UI:
@@ -22,8 +24,8 @@ BUGS:
 -   FIXED: Strange behaviour with how sometimes dynamic editing functions and other times not depending on where it’s located. Left of screen does not register.
 	-Fixed by removing the marker.x, and marker.y from the callback on tiles and having dynamic editing only be called when a tile is put down.
 	
-- Error in one of the bitmasking values for one of grass findings.
-
+- FIXED: Error in one of the bitmasking values for one of grass findings. 
+	-Switched bitmask value 75 for the correct tile index.
 
 DEFINE: 
 - A game: 

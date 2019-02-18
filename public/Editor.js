@@ -46,14 +46,6 @@ class Editor extends Phaser.Scene{
 
 //PRELOAD <=======================================================================================================================
 preload(){
-
-
-   
-
-    var spriteMap = "main"
-    var textureURL = 'assets/main.png'
-    var atlasURL = 'assets/main.json'
-    var tileSetImage = 'terrain2'
     
     //loads tileset reference file
 
@@ -172,7 +164,8 @@ create(){
     GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
     HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
     SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-  this.scale.on('resize', resize, this);
+    //This calls Resize.js when the resize event is triggered.
+    this.scale.on('resize', resize, this);
 }//End of Create
  
 //UPDATE <=======================================================================================================================
@@ -205,6 +198,7 @@ update (time, delta){
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       dynamicEditing.call(this)
       }
       
@@ -217,10 +211,14 @@ update (time, delta){
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with selectedTile 
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+     roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+
 
       };
        if (this.input.manager.activePointer.isDown && selectedLayer==4){
-          // Fill the tiles within the object Layer with selectedTile 
+          // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
+      objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+      terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
       roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       dynamicEditing.call(this)
       };

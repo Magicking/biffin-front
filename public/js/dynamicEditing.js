@@ -497,7 +497,7 @@ if(bitValue == 74){
 };
 //if bottom and right have tile
 if(bitValue == 75){
-  terrainLayer.putTileAt(17, interestingTile.x, interestingTile.y)
+  terrainLayer.putTileAt(28, interestingTile.x, interestingTile.y)
 }
 //if bottom and right
 if(bitValue == 80){
@@ -567,6 +567,10 @@ if (bitValue == 126){
 if (bitValue == 127){
   terrainLayer.putTileAt(33, interestingTile.x, interestingTile.y);
 }
+/*if (bitValue == 150){
+  terrainLayer.putTileAt(29, interestingTile.x, interestingTile.y);
+}*/
+
 //If East,NE and SE have a tile
 if (bitValue == 208){
   terrainLayer.putTileAt(34, interestingTile.x, interestingTile.y);
