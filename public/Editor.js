@@ -37,6 +37,7 @@ var controlConfig
 var test
 var editTest
 var mapSave = {}
+var objects
 
 class Editor extends Phaser.Scene{
   constructor() {
@@ -53,8 +54,9 @@ preload(){
     
     //Load tileset image
     this.load.image('terrain2', 'assets/terrain2.png'); 
-    this.load.image('objects','assets/objects.png');
+    
     this.load.image('roads','assets/roads.png')
+    this.load.atlas('objects','assets/objects.png','assets/objects.json')
 
   }
  
@@ -102,7 +104,7 @@ create(){
 
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
     var grass = map.addTilesetImage('grass', null , 32, 32);
-    var objects = map.addTilesetImage('objects', null, 32, 64,);
+     objects = map.addTilesetImage('objects', null, 32, 64,);
     var roads = map.addTilesetImage('roads', null, 32, 32);
 
     
@@ -113,6 +115,7 @@ create(){
     terrainLayer.depth = 0
     objectLayer = map.createBlankDynamicLayer('objects', objects);
     objectLayer.depth = 1
+    objectLayer.setRenderOrder(1)
     roadLayer = map.createBlankDynamicLayer('roads', roads);
     roadLayer.depth = 1
     buildingLayer = map.createBlankDynamicLayer('buildings', tiles);
@@ -170,7 +173,7 @@ create(){
  
 //UPDATE <=======================================================================================================================
 update (time, delta){
-
+      var objectPlaced = 0
       //Test to see both extremities
       culled = mainCam.cull(testArray)
       if(culled.length == 2 ){
@@ -203,18 +206,20 @@ update (time, delta){
       }
       
       if (this.input.manager.activePointer.isDown && selectedLayer==1) {
-          // Fill the tiles within the terrain Layer with selectedTile 
+      // Fill the tiles within the terrain Layer with selectedTile 
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       dynamicEditing.call(this)
       };
 
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with selectedTile 
-      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+     objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
      roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+     objectPlaced = 1
+      } else 
+      {objectPlaced = 0}
 
-
-      };
+    
        if (this.input.manager.activePointer.isDown && selectedLayer==4){
           // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
       objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
@@ -245,6 +250,7 @@ update (time, delta){
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
        brushSizeTooltip.text = brushSize;
+
       };
      
      //Tester on B
@@ -252,7 +258,34 @@ update (time, delta){
         console.log('Test')
         
       }
-  
+ 
+      //If some tiles are being placed on the object Layer
+
+        //create callback with arrow function so that it works inside 'this'
+        var objectReplace = tile =>{
+          //get all tiles that are on objectLayer
+          var tmp = objectLayer.getTileAt(tile.x,tile.y,true)
+          //if a tile is a mountain, 
+          if(tmp.index == 0 ){
+            //remove it
+         
+            objectLayer.removeTileAt(tmp.x,tmp.y)
+      
+            //replace it with a sprite with an origin at half it's height
+            this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
+          }
+          if(tmp.index == 1 ){
+            //remove it
+            objectLayer.removeTileAt(tmp.x,tmp.y)
+            //replace it with a sprite with an origin at half it's height
+            this.add.sprite(tmp.x*32,tmp.y*32,'objects','1.png').setOrigin(0,0.5)
+          }
+        }
+        //run the callback for every tile on objectLayer
+        objectLayer.forEachTile(objectReplace);
+      
+
+
        //Save on pressing S
        if (SKey.isDown){
           //This is our map's save object, it will contain all layers as objects that contain arrays containing tiles.
@@ -264,7 +297,9 @@ update (time, delta){
           var terrainCallback = function(tile){
 
             var tmp = terrainLayer.getTileAt(tile.x,tile.y, true);
-            mapSave.terrainLayer.push({index:tmp.index,x:tmp.x,y:tmp.y});
+            mapSave.terrainLayer.push({index:tmp.index,
+              x:tmp.x,
+              y:tmp.y});
 
           };
 
