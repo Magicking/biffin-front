@@ -36,8 +36,9 @@ var allowZoom
 var controlConfig
 var test
 var editTest
-var mapSave = {}
-var objects
+
+
+
 
 class Editor extends Phaser.Scene{
   constructor() {
@@ -98,13 +99,10 @@ create(){
     };
     controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
   
-
-   
-    //Adding Tileset
-
+    //Adding Tilesets
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
     var grass = map.addTilesetImage('grass', null , 32, 32);
-     objects = map.addTilesetImage('objects', null, 32, 64,);
+    var objects = map.addTilesetImage('objects', null, 32, 64,);
     var roads = map.addTilesetImage('roads', null, 32, 32);
 
     
@@ -157,16 +155,65 @@ create(){
  
     //Create GUI scene
     createButtons.call(this); 
-
+    var objectPlaced = 0
     //We call dynamic editing once on create to make sure all borders are correctly set
     dynamicEditing.call(this);
-  
+
+
+      
+       this.input.on('pointerdown', function (pointer) {
+
+      if ( selectedLayer==1) {
+      // Fill the tiles within the terrain Layer with selectedTile 
+      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
+      };
+
+      if (input == 1){
+      //
+      if ( selectedLayer=='eraser')
+      {
+      selectedTile= -1   // Erases tiles on all layers and places water on terrain
+      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
+      }
+      
+     
+      if ( selectedLayer==2){
+          // Fill the tiles within the object Layer with selectedTile 
+     objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+     roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+     objectPlaced = 1
+      } else 
+      {objectPlaced = 0}
+
+    
+       if ( selectedLayer==4){
+          // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
+      objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+      terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
+      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
+      };
+
+       if ( selectedLayer==3){
+          // Fill the tiles within the building Layer with selectedBuilding
+      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      };
+      }
+
+    }, this);
+    
     //Create Key for testing
     BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
     CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
     GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
     HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
     SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
     //This calls Resize.js when the resize event is triggered.
     this.scale.on('resize', resize, this);
 }//End of Create
@@ -192,47 +239,7 @@ update (time, delta){
       marker.x = map.tileToWorldX(pointerTileX);
       marker.y = map.tileToWorldY(pointerTileY);
       brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
-      
-      if (input == 1){
-      //
-      if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
-      {
-       selectedTile= -1   // Erases tiles on all layers and places water on terrain
-      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      dynamicEditing.call(this)
-      }
-      
-      if (this.input.manager.activePointer.isDown && selectedLayer==1) {
-      // Fill the tiles within the terrain Layer with selectedTile 
-      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      dynamicEditing.call(this)
-      };
-
-      if (this.input.manager.activePointer.isDown && selectedLayer==2){
-          // Fill the tiles within the object Layer with selectedTile 
-     objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-     roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-     objectPlaced = 1
-      } else 
-      {objectPlaced = 0}
-
-    
-       if (this.input.manager.activePointer.isDown && selectedLayer==4){
-          // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
-      objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-      terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
-      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      dynamicEditing.call(this)
-      };
-
-       if (this.input.manager.activePointer.isDown && selectedLayer==3){
-          // Fill the tiles within the building Layer with selectedBuilding
-      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      };
-      }
+   
 
       //Brush marker size management
       if (GKey.isDown ) {
@@ -252,28 +259,62 @@ update (time, delta){
        brushSizeTooltip.text = brushSize;
 
       };
-     
-     //Tester on B
-      if (BKey.isDown ){
-        console.log('Test')
-        
-      }
- 
-      //If some tiles are being placed on the object Layer
+     if(objectPlaced == 1){
 
-        //create callback with arrow function so that it works inside 'this'
+           //create callback with arrow function so that it works inside 'this'
         var objectReplace = tile =>{
+          
           //get all tiles that are on objectLayer
           var tmp = objectLayer.getTileAt(tile.x,tile.y,true)
           //if a tile is a mountain, 
           if(tmp.index == 0 ){
             //remove it
-         
-            objectLayer.removeTileAt(tmp.x,tmp.y)
-      
+            objectLayer.removeTileAt(tmp.x,tmp.y);
             //replace it with a sprite with an origin at half it's height
-            this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
+           var tmpSprite = this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
+          
           }
+          //if a tile is a forest
+          if(tmp.index == 1 ){
+            //remove it
+            objectLayer.removeTileAt(tmp.x,tmp.y)
+            //replace it with a sprite with an origin at half it's height
+            this.add.sprite(tmp.x*32,tmp.y*32,'objects','1.png').setOrigin(0,0.5)
+          }
+        }
+        //run the callback for every tile on objectLayer
+        objectLayer.forEachTile(objectReplace);}
+     //Tester on B
+      if (BKey.isDown ){
+        console.log('Test')   
+      }
+
+      if (SKey.isDown ){
+        //call our save function
+        MapSave.call()
+      }
+    
+ 
+           }
+        }//End of Update
+
+/*
+        //create callback with arrow function so that it works inside 'this'
+        var objectReplace = tile =>{
+          var objectContainer = this.add.container(0,0) 
+          //get all tiles that are on objectLayer
+          var tmp = objectLayer.getTileAt(tile.x,tile.y,true)
+          //if a tile is a mountain, 
+          if(tmp.index == 0 ){
+            //remove it
+            objectLayer.removeTileAt(tmp.x,tmp.y);
+            //replace it with a sprite with an origin at half it's height
+           var tmpSprite = this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
+         
+          objectContainer.add(tmpSprite)
+          console.log(objectContainer)
+          }
+          //if a tile is a forest
           if(tmp.index == 1 ){
             //remove it
             objectLayer.removeTileAt(tmp.x,tmp.y)
@@ -283,64 +324,4 @@ update (time, delta){
         }
         //run the callback for every tile on objectLayer
         objectLayer.forEachTile(objectReplace);
-      
-
-
-       //Save on pressing S
-       if (SKey.isDown){
-          //This is our map's save object, it will contain all layers as objects that contain arrays containing tiles.
-              mapSave = {terrainLayer:[],
-                         objectLayer:[],
-                         buildingLayer:[],
-                          };
-         
-          var terrainCallback = function(tile){
-
-            var tmp = terrainLayer.getTileAt(tile.x,tile.y, true);
-            mapSave.terrainLayer.push({index:tmp.index,
-              x:tmp.x,
-              y:tmp.y});
-
-          };
-
-          var objectCallback = function(tile){
-
-            var tmp = objectLayer.getTileAt(tile.x,tile.y, true);
-            mapSave.objectLayer.push({index:tmp.index,
-                                      x:tmp.x,
-                                      y:tmp.y});
-
-          };
-
-          var buildingCallback = function(tile){
-
-            var tmp = buildingLayer.getTileAt(tile.x,tile.y,true);
-            mapSave.buildingLayer.push({index:tmp.index,x:tmp.x,y:tmp.y});
-
-          };
-
-          //We use the forEachTile method in order to grab every tile's index, x and y on each corresponding layer then push it to a non-circular array 
-          //in order to be able to stringify the object.
-          console.log('Saving layers...');
-
-          terrainLayer.forEachTile(terrainCallback);
-          objectLayer.forEachTile(objectCallback);
-          buildingLayer.forEachTile(buildingCallback);
-
-          console.log('Saved all layers.');
-          //Needed: Placing the mapSave string in a Json file.
-
-            };
-
-           }
-
- resize (gameSize, baseSize, displaySize, resolution)
-{
-    var width = gameSize.width;
-    var height = gameSize.height;
-
-    this.cameras.resize(width, height);
-
-}
-}
-
+        */
