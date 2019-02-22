@@ -64,41 +64,47 @@ preload(){
 // CREATE<=======================================================================================================================
 create(){
 
-
-  
+  //===> Tests
     allowZoom = true
-    //Determines wether or not brush can write on map
-    input = 1
+    //Create Key for testing
+    BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+    CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+    GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+    HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+    SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+
+  //===>Camera creation
 
     //Camera creation
     mainCam = this.cameras.main
-  
-    //setting Map width and height in number of tiles
-    mapWidth = 150
-    mapHeight = 150
- 
-    //Layer creation
-    map = this.make.tilemap({ 
-      width: mapWidth, 
-      height: mapHeight, 
-      tileWidth: 32, 
-      tileHeight: 32, 
-      });
-    
+
     //Create cursors to be able to move camera around and their configuration
     var cursors = this.input.keyboard.createCursorKeys();
     controlConfig = {
-        camera: mainCam,
-        left: cursors.left,
-        right: cursors.right,
-        up: cursors.up,
-        down: cursors.down,
-        speed: 0.5,
-        zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-        zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-    };
-    controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
-  
+      camera: mainCam,
+      left: cursors.left,
+      right: cursors.right,
+      up: cursors.up,
+      down: cursors.down,
+      speed: 0.5,
+      zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+      };
+
+      controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+
+  //===>Map creation
+    //setting Map width and height in number of tiles
+    mapWidth = 150
+    mapHeight = 150
+    map = this.make.tilemap({ 
+    width: mapWidth, 
+    height: mapHeight, 
+    tileWidth: 32, 
+    tileHeight: 32, 
+    });
+    
+
     //Adding Tilesets
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
     var grass = map.addTilesetImage('grass', null , 32, 32);
@@ -134,14 +140,14 @@ create(){
     testArray = []
     testArray.push(topLeft)
     testArray.push(bottomRight)
-
-     
-        
+      
     //Saving layer data to mapData
     mapData.push(terrainLayer.layer.data)
     mapData.push(objectLayer.layer.data)
     mapData.push(buildingLayer.layer.data)
-    
+
+  //===>Marker
+
     // Create Paintbrush marker
     marker = this.add.graphics();
     brushSize = 6
@@ -156,77 +162,74 @@ create(){
     //Create GUI scene
     createButtons.call(this); 
     var objectPlaced = 0
+
     //We call dynamic editing once on create to make sure all borders are correctly set
     dynamicEditing.call(this);
 
-
+//===>Tile painter logic
+      //create isPlacing to register wether tiles are being put down, and create the pointermove event, which triggers logic when the pointer is moving
+      var isPlacing = true
+      //on pointerdown, 
+      this.input.on('pointerdown', function (pointer) {
       
-       this.input.on('pointerdown', function (pointer) {
+      this.input.on('pointerup', function (pointer){ isPlacing = false },this);
+      this.input.on('pointermove', function (pointer) {
+        //If the click stops, isPlacing becomes false, and the move logic stops firing
+            
+        
+        //if placing is allowed
+        if (input == 1){
+        //place on terrain layer
+          if ( selectedLayer == 1 && isPlacing == true) {
+          // Fill the tiles within the terrain Layer with selectedTile 
+          terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          dynamicEditing.call(this)
+          };
 
-      if ( selectedLayer==1) {
-      // Fill the tiles within the terrain Layer with selectedTile 
-      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      dynamicEditing.call(this)
-      };
-
-      if (input == 1){
-      //
-      if ( selectedLayer=='eraser')
-      {
-      selectedTile= -1   // Erases tiles on all layers and places water on terrain
-      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      dynamicEditing.call(this)
-      }
-      
-     
-      if ( selectedLayer==2){
+          if ( selectedLayer =='eraser' && isPlacing == true){
+          // Erases tiles on all layers and places water on terrain
+          selectedTile= -1   
+          terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          dynamicEditing.call(this)
+          }
+        
+          if ( selectedLayer==2 && isPlacing == true){
           // Fill the tiles within the object Layer with selectedTile 
-     objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-     roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-     objectPlaced = 1
-      } else 
-      {objectPlaced = 0}
+          objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+          objectPlaced = 1
+          } else {
+          objectPlaced = 0}
 
-    
-       if ( selectedLayer==4){
+          if ( selectedLayer == 4 && isPlacing == true){
           // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
-      objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-      terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
-      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      dynamicEditing.call(this)
-      };
+          objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+          terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
+          roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          dynamicEditing.call(this)
+          };
 
-       if ( selectedLayer==3){
+          if ( selectedLayer== 3 && isPlacing == true){
           // Fill the tiles within the building Layer with selectedBuilding
-      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-      };
-      }
-
-    }, this);
+          buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+          };
+        }
+        }, this)//end input move
+      }, this)//end input on;
     
-    //Create Key for testing
-    BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
-    CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
-    GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
-    HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
-    SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    
+  //===>Resize Logic
+      //This calls Resize.js when the resize event is triggered.
+      this.scale.on('resize', resize, this);
 
-    //This calls Resize.js when the resize event is triggered.
-    this.scale.on('resize', resize, this);
 }//End of Create
  
 //UPDATE <=======================================================================================================================
 update (time, delta){
       var objectPlaced = 0
-      //Test to see both extremities
-      culled = mainCam.cull(testArray)
-      if(culled.length == 2 ){
-        console.log('seeing both extremities')
-        mainCam.inputEnabled = false          //Find way to disable zooming out here
-      }
       
       controls.update(delta);
       var worldPoint = this.input.activePointer.positionToCamera(mainCam);
@@ -238,11 +241,10 @@ update (time, delta){
       // Snap to tile coordinates, but in world space
       marker.x = map.tileToWorldX(pointerTileX);
       marker.y = map.tileToWorldY(pointerTileY);
-      brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
+      
    
-
       //Brush marker size management
-      if (GKey.isDown ) {
+      if (GKey.isDown ){
       //Decrements by 1
        brushSize--;
       //Clear previous marker
@@ -252,15 +254,15 @@ update (time, delta){
        brushSizeTooltip.text = brushSize;
       };
 
-       if (HKey.isDown ) {
+       if (HKey.isDown ){
        brushSize++;
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
        brushSizeTooltip.text = brushSize;
-
       };
-     if(objectPlaced == 1){
+      brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
 
+     if(objectPlaced == 1){
            //create callback with arrow function so that it works inside 'this'
         var objectReplace = tile =>{
           
@@ -293,8 +295,7 @@ update (time, delta){
         //call our save function
         MapSave.call()
       }
-    
- 
+      dynamicEditing.call(this);
            }
         }//End of Update
 
