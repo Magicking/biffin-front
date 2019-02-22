@@ -170,56 +170,7 @@ create(){
       //create isPlacing to register wether tiles are being put down, and create the pointermove event, which triggers logic when the pointer is moving
       var isPlacing = true
       //on pointerdown, 
-      this.input.on('pointerdown', function (pointer) {
-      
-      this.input.on('pointerup', function (pointer){ isPlacing = false },this);
-      this.input.on('pointermove', function (pointer) {
-        //If the click stops, isPlacing becomes false, and the move logic stops firing
-            
-        
-        //if placing is allowed
-        if (input == 1){
-        //place on terrain layer
-          if ( selectedLayer == 1 && isPlacing == true) {
-          // Fill the tiles within the terrain Layer with selectedTile 
-          terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          dynamicEditing.call(this)
-          };
-
-          if ( selectedLayer =='eraser' && isPlacing == true){
-          // Erases tiles on all layers and places water on terrain
-          selectedTile= -1   
-          terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          dynamicEditing.call(this)
-          }
-        
-          if ( selectedLayer==2 && isPlacing == true){
-          // Fill the tiles within the object Layer with selectedTile 
-          objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-          objectPlaced = 1
-          } else {
-          objectPlaced = 0}
-
-          if ( selectedLayer == 4 && isPlacing == true){
-          // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
-          objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-          terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
-          roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          dynamicEditing.call(this)
-          };
-
-          if ( selectedLayer== 3 && isPlacing == true){
-          // Fill the tiles within the building Layer with selectedBuilding
-          buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-          };
-        }
-        }, this)//end input move
-      }, this)//end input on;
-    
+ 
     
   //===>Resize Logic
       //This calls Resize.js when the resize event is triggered.
@@ -261,6 +212,45 @@ update (time, delta){
        brushSizeTooltip.text = brushSize;
       };
       brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
+
+       if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
+      {
+       selectedTile= -1   // Erases tiles on all layers and places water on terrain
+      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
+      }
+      
+      if (this.input.manager.activePointer.isDown && selectedLayer==1) {
+      // Fill the tiles within the terrain Layer with selectedTile 
+      terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
+      };
+
+      if (this.input.manager.activePointer.isDown && selectedLayer==2){
+          // Fill the tiles within the object Layer with selectedTile 
+     objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+     roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+     objectPlaced = 1
+      } else 
+      {objectPlaced = 0}
+
+    
+       if (this.input.manager.activePointer.isDown && selectedLayer==4){
+          // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
+      objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+      terrainLayer.fill(0, marker.x/32, marker.y/32, brushSize, brushSize);
+      roadLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      dynamicEditing.call(this)
+      };
+
+       if (this.input.manager.activePointer.isDown && selectedLayer==3){
+          // Fill the tiles within the building Layer with selectedBuilding
+      buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      };
+      
 
      if(objectPlaced == 1){
            //create callback with arrow function so that it works inside 'this'
