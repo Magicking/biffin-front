@@ -64,47 +64,41 @@ preload(){
 // CREATE<=======================================================================================================================
 create(){
 
-  //===> Tests
-    allowZoom = true
-    //Create Key for testing
-    BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
-    CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
-    GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
-    HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
-    SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
-  //===>Camera creation
+  
+    allowZoom = true
+    //Determines wether or not brush can write on map
+    input = 1
 
     //Camera creation
     mainCam = this.cameras.main
-
-    //Create cursors to be able to move camera around and their configuration
-    var cursors = this.input.keyboard.createCursorKeys();
-    controlConfig = {
-      camera: mainCam,
-      left: cursors.left,
-      right: cursors.right,
-      up: cursors.up,
-      down: cursors.down,
-      speed: 0.5,
-      zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-      zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-      };
-
-      controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
-
-  //===>Map creation
+  
     //setting Map width and height in number of tiles
     mapWidth = 150
     mapHeight = 150
+ 
+    //Layer creation
     map = this.make.tilemap({ 
-    width: mapWidth, 
-    height: mapHeight, 
-    tileWidth: 32, 
-    tileHeight: 32, 
-    });
+      width: mapWidth, 
+      height: mapHeight, 
+      tileWidth: 32, 
+      tileHeight: 32, 
+      });
     
-
+    //Create cursors to be able to move camera around and their configuration
+    var cursors = this.input.keyboard.createCursorKeys();
+    controlConfig = {
+        camera: mainCam,
+        left: cursors.left,
+        right: cursors.right,
+        up: cursors.up,
+        down: cursors.down,
+        speed: 0.5,
+        zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+        zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+    };
+    controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
+  
     //Adding Tilesets
     var tiles = map.addTilesetImage('terrain2', null, 32, 32);
     var grass = map.addTilesetImage('grass', null , 32, 32);
@@ -140,14 +134,14 @@ create(){
     testArray = []
     testArray.push(topLeft)
     testArray.push(bottomRight)
-      
+
+     
+        
     //Saving layer data to mapData
     mapData.push(terrainLayer.layer.data)
     mapData.push(objectLayer.layer.data)
     mapData.push(buildingLayer.layer.data)
-
-  //===>Marker
-
+    
     // Create Paintbrush marker
     marker = this.add.graphics();
     brushSize = 6
@@ -162,29 +156,29 @@ create(){
     //Create GUI scene
     createButtons.call(this); 
     var objectPlaced = 0
-
     //We call dynamic editing once on create to make sure all borders are correctly set
     dynamicEditing.call(this);
-
-//===>Tile painter logic
-      //create isPlacing to register wether tiles are being put down, and create the pointermove event, which triggers logic when the pointer is moving
-      var isPlacing = true
-      //on pointerdown, 
- 
     
-  //===>Resize Logic
-      //This calls Resize.js when the resize event is triggered.
-      this.scale.on('resize', resize, this);
+    //Create Key for testing
+    BKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
+    CKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+    GKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+    HKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+    SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
+    //This calls Resize.js when the resize event is triggered.
+    this.scale.on('resize', resize, this);
 }//End of Create
  
 //UPDATE <=======================================================================================================================
 update (time, delta){
-      var objectPlaced = 0
-      
+  //===> Map Movement
+
       controls.update(delta);
       var worldPoint = this.input.activePointer.positionToCamera(mainCam);
- 
+  
+   //===>Marker
+
       // Rounds down to nearest tile
       var pointerTileX = map.worldToTileX(worldPoint.x);
       var pointerTileY = map.worldToTileY(worldPoint.y);
@@ -192,10 +186,10 @@ update (time, delta){
       // Snap to tile coordinates, but in world space
       marker.x = map.tileToWorldX(pointerTileX);
       marker.y = map.tileToWorldY(pointerTileY);
-      
-   
+      brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
+
       //Brush marker size management
-      if (GKey.isDown ){
+      if (GKey.isDown ) {
       //Decrements by 1
        brushSize--;
       //Clear previous marker
@@ -205,13 +199,16 @@ update (time, delta){
        brushSizeTooltip.text = brushSize;
       };
 
-       if (HKey.isDown ){
+       if (HKey.isDown ) {
        brushSize++;
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
        brushSizeTooltip.text = brushSize;
+
       };
-      brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
+
+  //===> Tile painter logic
+      //create isPlacing to register wether tiles are being put down, and create the pointermove event, which triggers logic when the pointer is moving
 
        if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
       {
@@ -223,7 +220,7 @@ update (time, delta){
       dynamicEditing.call(this)
       }
       
-      if (this.input.manager.activePointer.isDown && selectedLayer==1) {
+      if (this.input.manager.activePointer.isDown && selectedLayer == 1 ) {
       // Fill the tiles within the terrain Layer with selectedTile 
       terrainLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       dynamicEditing.call(this)
@@ -231,11 +228,10 @@ update (time, delta){
 
       if (this.input.manager.activePointer.isDown && selectedLayer==2){
           // Fill the tiles within the object Layer with selectedTile 
-     objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
-     roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-     objectPlaced = 1
-      } else 
-      {objectPlaced = 0}
+      objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
+      roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
+    
+      }
 
     
        if (this.input.manager.activePointer.isDown && selectedLayer==4){
@@ -246,13 +242,15 @@ update (time, delta){
       dynamicEditing.call(this)
       };
 
-       if (this.input.manager.activePointer.isDown && selectedLayer==3){
-          // Fill the tiles within the building Layer with selectedBuilding
+      if (this.input.manager.activePointer.isDown && selectedLayer==3 ){
+      // Fill the tiles within the building Layer with selectedBuilding
       buildingLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       };
-      
+   
 
-     if(objectPlaced == 1){
+      
+       //===>Tile replacer. Replaces 32x32 tiles with 32x64 sprites
+ 
            //create callback with arrow function so that it works inside 'this'
         var objectReplace = tile =>{
           
@@ -260,10 +258,10 @@ update (time, delta){
           var tmp = objectLayer.getTileAt(tile.x,tile.y,true)
           //if a tile is a mountain, 
           if(tmp.index == 0 ){
-            //remove it
-            objectLayer.removeTileAt(tmp.x,tmp.y);
-            //replace it with a sprite with an origin at half it's height
-           var tmpSprite = this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
+          //remove it
+          objectLayer.removeTileAt(tmp.x,tmp.y);
+          //replace it with a sprite with an origin at half it's height
+          var tmpSprite = this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
           
           }
           //if a tile is a forest
@@ -275,7 +273,8 @@ update (time, delta){
           }
         }
         //run the callback for every tile on objectLayer
-        objectLayer.forEachTile(objectReplace);}
+        objectLayer.forEachTile(objectReplace);
+
      //Tester on B
       if (BKey.isDown ){
         console.log('Test')   
@@ -285,7 +284,8 @@ update (time, delta){
         //call our save function
         MapSave.call()
       }
-      dynamicEditing.call(this);
+    
+ 
            }
         }//End of Update
 
