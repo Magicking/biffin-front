@@ -36,7 +36,12 @@ var allowZoom
 var controlConfig
 var test
 var editTest
-
+var countries
+var p1 = null
+var p2 = null
+var selectedShape = 'rectangle'
+var onlyColliding = true
+var graphics
 
 
 
@@ -64,6 +69,10 @@ preload(){
 // CREATE<=======================================================================================================================
 create(){
 
+    graphics = this.add.graphics({
+        lineStyle: { width: 4, color: 0xa8fff2 },
+        fillStyle: { color: 0xa8fff2 }
+    });
 
   
     allowZoom = true
@@ -186,16 +195,17 @@ update (time, delta){
       // Snap to tile coordinates, but in world space
       marker.x = map.tileToWorldX(pointerTileX);
       marker.y = map.tileToWorldY(pointerTileY);
-      brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
+      
 
       //Brush marker size management
       if (GKey.isDown ) {
+        brushSize = Phaser.Math.Clamp(brushSize, 1, 12);
       //Decrements by 1
        brushSize--;
       //Clear previous marker
        marker.clear();
       //redraw marker
-       marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight); //Bug with how we set the rectangle widths.
+       marker.strokeRect(0,0, brushSize * 32, brushSize * 32); //Bug with how we set the rectangle widths.
        brushSizeTooltip.text = brushSize;
       };
 
@@ -204,11 +214,9 @@ update (time, delta){
        marker.clear();
        marker.strokeRect(0,0, brushSize * map.tileWidth, brushSize * map.tileHeight);
        brushSizeTooltip.text = brushSize;
-
       };
 
   //===> Tile painter logic
-      //create isPlacing to register wether tiles are being put down, and create the pointermove event, which triggers logic when the pointer is moving
 
        if (this.input.manager.activePointer.isDown && selectedLayer=='eraser')
       {
@@ -230,10 +238,8 @@ update (time, delta){
           // Fill the tiles within the object Layer with selectedTile 
       objectLayer.fill(selectedTile, marker.x/32, marker.y/32, brushSize, brushSize);
       roadLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
-    
       }
-
-    
+ 
        if (this.input.manager.activePointer.isDown && selectedLayer==4){
           // Fill the tiles within the road Layer with roads, places grass under it beforehand, clears objectlayer.
       objectLayer.fill(-1, marker.x/32, marker.y/32, brushSize, brushSize);
@@ -249,70 +255,92 @@ update (time, delta){
    
 
       
-       //===>Tile replacer. Replaces 32x32 tiles with 32x64 sprites
+  //===>Tile replacer. Replaces 32x32 tiles with 32x64 sprites
  
-           //create callback with arrow function so that it works inside 'this'
-        var objectReplace = tile =>{
+      //create callback with arrow function so that it works inside 'this'
+      var objectReplace = tile =>{
           
-          //get all tiles that are on objectLayer
-          var tmp = objectLayer.getTileAt(tile.x,tile.y,true)
-          //if a tile is a mountain, 
-          if(tmp.index == 0 ){
-          //remove it
-          objectLayer.removeTileAt(tmp.x,tmp.y);
-          //replace it with a sprite with an origin at half it's height
-          var tmpSprite = this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
+      //get all tiles that are on objectLayer
+      var tmp = objectLayer.getTileAt(tile.x,tile.y,true)
+      //if a tile is a mountain, 
+      if(tmp.index == 0 ){
+      //remove it
+      objectLayer.removeTileAt(tmp.x,tmp.y);
+      //replace it with a sprite with an origin at half it's height
+      var tmpSprite = this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
           
-          }
-          //if a tile is a forest
-          if(tmp.index == 1 ){
-            //remove it
-            objectLayer.removeTileAt(tmp.x,tmp.y)
-            //replace it with a sprite with an origin at half it's height
-            this.add.sprite(tmp.x*32,tmp.y*32,'objects','1.png').setOrigin(0,0.5)
-          }
-        }
-        //run the callback for every tile on objectLayer
-        objectLayer.forEachTile(objectReplace);
+      }
+      //if a tile is a forest
+      if(tmp.index == 1 ){
+      //remove it
+      objectLayer.removeTileAt(tmp.x,tmp.y)
+      //replace it with a sprite with an origin at half it's height
+      this.add.sprite(tmp.x*32,tmp.y*32,'objects','1.png').setOrigin(0,0.5)
+      }
+    }
+      //run the callback for every tile on objectLayer
+      objectLayer.forEachTile(objectReplace);
 
-     //Tester on B
+  //===>Country maker
+    
+      if (this.input.activePointer.isDown)
+      {
+          var worldPoint = this.input.activePointer.positionToCamera(this.cameras.main);
+          if (!p1)
+          {
+              p1 = worldPoint.clone();
+          }
+          else if (!p2)
+          {
+              p2 = worldPoint.clone();
+          }
+          else
+          {
+              p1 = worldPoint.clone();
+              p2 = null;
+          }
+      }
+      // Show user where they clicked
+      if (p1) { graphics.fillCircle(p1.x, p1.y, 3); }
+      if (p2) { graphics.fillCircle(p2.x, p2.y, 3); }
+
+      // If we have both points, draw a shape and manipulate the tiles in that shape
+      if (p1 && p2)
+      {
+          terrainLayer.forEachTile(function (tile) { tile.alpha = 1; });
+
+          var overlappingTiles = [];
+
+          switch (selectedShape)
+          {
+              case 'rectangle':
+                  var xStart = Math.min(p1.x, p2.x);
+                  var yStart = Math.min(p1.y, p2.y);
+                  var xEnd = Math.max(p1.x, p2.x);
+                  var yEnd = Math.max(p1.y, p2.y);
+                  var rect = new Phaser.Geom.Rectangle(xStart, yStart, xEnd - xStart, yEnd - yStart);
+                  overlappingTiles = terrainLayer.getTilesWithinShape(rect, { isColliding: onlyColliding });
+                  graphics.strokeRectShape(rect);
+                  break;
+              default:
+                  break;
+          }
+
+          overlappingTiles.forEach(function (tile) { tile.alpha = 0.25; });
+      }
+
+
+  //===>Map Save
+      //call our save function
+       if (SKey.isDown ){
+      MapSave.call()
+      }
+
+  //===>Test Key
       if (BKey.isDown ){
         console.log('Test')   
       }
 
-      if (SKey.isDown ){
-        //call our save function
-        MapSave.call()
-      }
-    
- 
-           }
-        }//End of Update
-
-/*
-        //create callback with arrow function so that it works inside 'this'
-        var objectReplace = tile =>{
-          var objectContainer = this.add.container(0,0) 
-          //get all tiles that are on objectLayer
-          var tmp = objectLayer.getTileAt(tile.x,tile.y,true)
-          //if a tile is a mountain, 
-          if(tmp.index == 0 ){
-            //remove it
-            objectLayer.removeTileAt(tmp.x,tmp.y);
-            //replace it with a sprite with an origin at half it's height
-           var tmpSprite = this.add.sprite(tmp.x*32,tmp.y*32,'objects','0.png').setOrigin(0,0.5)
-         
-          objectContainer.add(tmpSprite)
-          console.log(objectContainer)
-          }
-          //if a tile is a forest
-          if(tmp.index == 1 ){
-            //remove it
-            objectLayer.removeTileAt(tmp.x,tmp.y)
-            //replace it with a sprite with an origin at half it's height
-            this.add.sprite(tmp.x*32,tmp.y*32,'objects','1.png').setOrigin(0,0.5)
-          }
-        }
-        //run the callback for every tile on objectLayer
-        objectLayer.forEachTile(objectReplace);
-        */
+      
+  }
+}//End of Update
