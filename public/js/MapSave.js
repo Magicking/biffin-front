@@ -12,16 +12,18 @@ function MapSave(){
          
           var terrainCallback = function(tile){
 
-            var tmp = terrainLayer.getTileAt(tile.x,tile.y, true);
-            mapSave.terrainLayer.push({index:tmp.index,
+            var tmp = terrainLayer.getTileAt(tile.x,tile.y);
+            if(tmp != null){
+             mapSave.terrainLayer.push({index:tmp.index,
               x:tmp.x,
-              y:tmp.y});
+              y:tmp.y});}
+           
 
           };
 
           var objectCallback = function(tile){
 
-            var tmp = objectLayer.getTileAt(tile.x,tile.y, true);
+            var tmp = objectLayer.getTileAt(tile.x,tile.y);
             mapSave.objectLayer.push({index:tmp.index,
                                       x:tmp.x,
                                       y:tmp.y});
@@ -30,7 +32,7 @@ function MapSave(){
 
           var buildingCallback = function(tile){
 
-            var tmp = buildingLayer.getTileAt(tile.x,tile.y,true);
+            var tmp = buildingLayer.getTileAt(tile.x,tile.y);
             mapSave.buildingLayer.push({index:tmp.index,x:tmp.x,y:tmp.y});
 
           };
